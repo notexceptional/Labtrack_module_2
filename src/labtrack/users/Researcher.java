@@ -6,28 +6,29 @@ import java.util.Scanner;
 public class Researcher extends User {
 
     public Researcher(String id, String name) {
-        super(id, name, "123456","Researcher");
+        super(id, name, "Researcher");
     }
 
     @Override
     public void showMenu() {
-        Scanner sc = new Scanner(System.in);
+        System.out.println("1. Add Experiment");
+        System.out.println("2. View Experiment");
+        System.out.println("3. Modify Experiment");
+        System.out.println("0. Logout");
+    }
+
+    @Override
+    public void handleChoice(int choice, Scanner sc) {
         ExperimentService service = new ExperimentService();
 
-        System.out.println("1. Add Experiment");
-        System.out.println("2. Update Experiment Data");
-        System.out.println("0. Logout");
-
-        int choice = sc.nextInt();
-
-        switch (choice) {
-            case 1:
-                service.addExperiment();
-                break;
-
-            case 2:
-                System.out.println("Feature placeholder (UML: editExperiment)");
-                break;
+        if (choice == 1) {
+            service.addExperiment();
+        }
+        if (choice == 2) {
+            service.viewExperiments();
+        }
+        if (choice == 3) {
+            service.modifyExperiment();
         }
     }
 }

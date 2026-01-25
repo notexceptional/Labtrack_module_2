@@ -8,6 +8,10 @@ public class AuthService {
 
     public User login() {
         Scanner sc = new Scanner(System.in);
+        return login(sc);
+    }
+
+    public User login(Scanner sc) {
 
         System.out.print("Enter role (researcher/technician/labmanager/admin): ");
         String role = sc.next();

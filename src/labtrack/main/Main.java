@@ -10,16 +10,19 @@ public class Main {
         AuthService auth = new AuthService();
 
         while (true) {
-            User user = auth.login();
+            User user = auth.login(sc);
             if (user == null) continue;
 
             boolean loggedIn = true;
             while (loggedIn) {
                 user.showMenu();
                 int choice = sc.nextInt();
-                if (choice == 0) loggedIn = false;
+                if (choice == 0) {
+                    loggedIn = false;
+                } else {
+                    user.handleChoice(choice, sc);
+                }
             }
         }
     }
 }
-//Need to work on the exit-Tiran
