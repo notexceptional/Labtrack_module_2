@@ -15,7 +15,10 @@ public class Admin extends User {
 
     @Override
     public void showMenu() {
-        System.out.println("1. Create User\n2. Delete User\n0. Logout");
+        System.out.println("1. Create User");
+        System.out.println("2. Delete User");
+        System.out.println("3. View All Users");
+        System.out.println("0. Logout");
     }
 
     @Override
@@ -28,27 +31,73 @@ public class Admin extends User {
             deleteUser(sc);
             return;
         }
-
+        if (choice == 3) {
+            viewAllUsers();
+            return;
+        }
         System.out.println("Invalid choice");
     }
 
     private void createUser(Scanner sc) {
-        System.out.print("Enter new user ID: ");
+        System.out.print("Enter new user ID (digits only): ");
         String id = sc.next();
+        if (!id.matches("\\d+")) {
+            System.out.println("User ID must be digits only.");
+            return;
+        }
 
-        System.out.print("Enter username: ");
+        System.out.print("Enter username (letters only): ");
         String username = sc.next();
+        if (!username.matches("[A-Za-z]+")) {
+            System.out.println("Username must be letters only.");
+            return;
+        }
 
-        System.out.print("Enter role (researcher/technician/labmanager/admin): ");
+        
+        List<String> lines = FileManager.readAllLines(USERS_FILE);
+        for (String line : lines) {
+            String[] p = line.split(",");
+            if (p.length < 2) continue;
+            if (p[0].equals(id)) {
+                System.out.println("User ID already exists. User not created.");
+                return;
+            }
+            if (p[1].equalsIgnoreCase(username)) {
+                System.out.println("Username already exists. User not created.");
+                return;
+            }
+        }
+
+        System.out.print("Enter role (researcher/technician/labmanager): ");
         String role = sc.next();
-
-        if (!isValidRole(role)) {
+        if (!isValidRole(role) || role.equalsIgnoreCase("admin")) {
             System.out.println("Invalid role. User not created.");
             return;
         }
 
-        FileManager.write(USERS_FILE, id + "," + username + "," + role.toLowerCase());
+        System.out.print("Enter password: ");
+        String password = sc.next();
+        if (password.length() < 4) {
+            System.out.println("Password invalid. Must be at least 4 characters.");
+            return;
+        }
+
+        FileManager.write(USERS_FILE, id + "," + username + "," + role.toLowerCase() + "," + password);
         System.out.println("User saved to " + USERS_FILE);
+    }
+
+    private void viewAllUsers() {
+        List<String> lines = FileManager.readAllLines(USERS_FILE);
+        if (lines.isEmpty()) {
+            System.out.println("No users found.");
+            return;
+        }
+        System.out.println("=== All Users ===");
+        for (String line : lines) {
+            String[] p = line.split(",");
+            if (p.length < 3) continue;
+            System.out.println("ID: " + p[0] + ", Username: " + p[1] + ", Role: " + p[2]);
+        }
     }
 
     private void deleteUser(Scanner sc) {

@@ -16,13 +16,24 @@ public class Main {
             boolean loggedIn = true;
             while (loggedIn) {
                 user.showMenu();
-                int choice = sc.nextInt();
+                int choice = -1;
+                try {
+                    choice = sc.nextInt();
+                } catch (Exception e) {
+                    System.out.println("Invalid input. Please enter a number.");
+                    sc.nextLine();
+                    continue;
+                }
+                sc.nextLine();
                 if (choice == 0) {
                     loggedIn = false;
                 } else {
                     user.handleChoice(choice, sc);
+
                 }
+
             }
+            sc.close();
         }
     }
 }

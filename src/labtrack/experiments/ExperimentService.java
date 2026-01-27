@@ -93,4 +93,36 @@ public class ExperimentService {
         FileManager.overwrite("experiments.csv", lines);
         System.out.println(" Experiment updated successfully");
     }
+
+    public void deleteExperiment(Scanner sc) {
+        List<String> lines = FileManager.readAllLines("experiments.csv");
+        if (lines.isEmpty()) {
+            System.out.println("No experiments found.");
+            return;
+        }
+
+        System.out.print("Enter Experiment ID to delete: ");
+        String targetId = sc.next();
+
+        boolean found = false;
+        List<String> kept = new java.util.ArrayList<>();
+        for (String line : lines) {
+            String[] p = line.split(",", 3);
+            if (p.length < 3) continue;
+            String id = p[0].trim();
+            if (id.equals(targetId)) {
+                found = true;
+                continue;
+            }
+            kept.add(line);
+        }
+
+        if (!found) {
+            System.out.println("Experiment not found.");
+            return;
+        }
+
+        FileManager.overwrite("experiments.csv", kept);
+        System.out.println("Experiment deleted successfully.");
+    }
 }

@@ -79,4 +79,27 @@ public class BookingService {
     public int countApproved() {
         return FileManager.readAllLines(APPROVED_FILE).size();
     }
+
+    public void makeReservation(Scanner sc) {
+        sc.nextLine();
+        System.out.print("Enter Booking ID: ");
+        String bookingID = sc.nextLine().trim();
+        System.out.print("Enter Date (yyyy-MM-dd): ");
+        String date = sc.nextLine().trim();
+        System.out.print("Enter Start Time (HH:mm): ");
+        String startTime = sc.nextLine().trim();
+        System.out.print("Enter End Time (HH:mm): ");
+        String endTime = sc.nextLine().trim();
+        System.out.print("Enter Room ID: ");
+        String roomID = sc.nextLine().trim();
+
+        if (bookingID.isEmpty() || date.isEmpty() || startTime.isEmpty() || endTime.isEmpty() || roomID.isEmpty()) {
+            System.out.println("All fields are required. Reservation not created.");
+            return;
+        }
+
+        Booking booking = new Booking(bookingID, date, startTime, endTime, roomID);
+        FileManager.write(PENDING_FILE, booking.toString());
+        System.out.println("Reservation submitted for approval.");
+    }
 }
