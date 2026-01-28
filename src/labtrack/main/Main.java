@@ -16,7 +16,7 @@ public class Main {
             boolean loggedIn = true;
             while (loggedIn) {
                 user.showMenu();
-                int choice = -1;
+                int choice = 10;
                 try {
                     choice = sc.nextInt();
                 } catch (Exception e) {
@@ -25,7 +25,7 @@ public class Main {
                     continue;
                 }
                 sc.nextLine();
-                if (choice == 0) {
+                if (choice == 4) {
                     loggedIn = false;
                 } else {
                     user.handleChoice(choice, sc);
@@ -33,7 +33,7 @@ public class Main {
                 }
 
             }
-            sc.close();
+
         }
     }
 }
