@@ -97,7 +97,7 @@ public class Admin extends User {
             System.out.println("No users found.");
             return;
         }
-        System.out.println("=== All Users ===");
+        System.out.println("===========All Users==========");
         for (String line : lines) {
             String[] p = line.split(",");
             if (p.length < 3) continue;
