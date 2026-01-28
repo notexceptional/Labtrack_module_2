@@ -1,0 +1,6 @@
+#Lab Employee Counts
+#Tue Jan 27 23:57:02 GMT+06:00 2026
+admin=1
+assistant=1
+lab\ manager=1
+researcher=1
