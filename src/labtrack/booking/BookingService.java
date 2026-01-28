@@ -81,7 +81,6 @@ public class BookingService {
     }
 
     public void makeReservation(Scanner sc) {
-        sc.nextLine();
         System.out.print("Enter Booking ID: ");
         String bookingID = sc.nextLine().trim();
         System.out.print("Enter Date (yyyy-MM-dd): ");

@@ -21,7 +21,7 @@ public class ExperimentService {
         Experiment exp = new Experiment(id, title, desc);
         FileManager.write("experiments.csv", exp.toString());
 
-        System.out.println("✅ Experiment added successfully");
+        System.out.println(" Experiment added successfully");
     }
 
     public void viewExperiments() {

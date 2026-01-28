@@ -25,7 +25,7 @@ public class Main {
                     continue;
                 }
                 sc.nextLine();
-                if (choice == 4) {
+                if (choice == 0) {
                     loggedIn = false;
                 } else {
                     user.handleChoice(choice, sc);

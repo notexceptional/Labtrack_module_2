@@ -18,8 +18,8 @@ public class Admin extends User {
         System.out.println("1. Create User");
         System.out.println("2. Delete User");
         System.out.println("3. View All Users");
-        System.out.println("4. Logout");
-        System.out.println("0. Exit");
+        System.out.println("0. Logout");
+        System.out.println("10. Exit");
     }
 
     @Override
@@ -36,7 +36,7 @@ public class Admin extends User {
             viewAllUsers();
             return;
         }
-        if (choice == 0) {
+        if (choice == 10) {
             System.out.println("Exiting application. Thank you for using Labtrack!");
             System.exit(0);
         }
