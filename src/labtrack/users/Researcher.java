@@ -1,7 +1,7 @@
 package labtrack.users;
 
-import labtrack.experiments.ExperimentService;
 import java.util.Scanner;
+import labtrack.experiments.ExperimentService;
 
 public class Researcher extends User {
 
@@ -12,30 +12,43 @@ public class Researcher extends User {
     @Override
     public void showMenu() {
         System.out.println("1. Add Experiment");
-        System.out.println("2. View Experiment");
+        System.out.println("2. View Experiments");
         System.out.println("3. Modify Experiment");
-        System.out.println("4. Delete Experiment");
-        System.out.println("5. Make Reservation");
-        System.out.println("0. Logout");
+        System.out.println("--- Version Control ---");
+        System.out.println("6. View Version History");
+        System.out.println("7. Restore Version");
+        System.out.println("--- Other ---");
+        System.out.println("8. Delete Experiment");
+        System.out.println("9. Make Reservation");
     }
 
     @Override
     public void handleChoice(int choice, Scanner sc) {
         ExperimentService service = new ExperimentService();
-        if (choice == 1) {
-            service.addExperiment();
-        }
-        if (choice == 2) {
-            service.viewExperiments();
-        }
-        if (choice == 3) {
-            service.modifyExperiment();
-        }
-        if (choice == 4) {
-            service.deleteExperiment(sc);
-        }
-        if (choice == 5) {
-            new labtrack.booking.BookingService().makeReservation(sc);
+        switch (choice) {
+            case 1:
+                service.addExperiment(sc);
+                break;
+            case 2:
+                service.viewExperiments();
+                break;
+            case 3:
+                service.modifyExperiment(sc);
+                break;
+            case 6:
+                service.viewVersionHistory(sc);
+                break;
+            case 7:
+                service.restoreVersion(sc);
+                break;
+            case 8:
+                service.deleteExperiment(sc);
+                break;
+            case 9:
+                new labtrack.booking.BookingService().makeReservation(sc);
+                break;
+            default:
+                break;
         }
     }
 }

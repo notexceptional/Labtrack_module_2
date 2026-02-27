@@ -1,15 +1,71 @@
 package labtrack.version;
 
+import java.util.*;
+
 public class VersionControl {
     private String versionID;
-    private String timestamp;
+    private String dataSnapshot;
+    private Date timestamp;
     private String modifiedBy;
     private String changeLog;
 
-    public VersionControl(String versionID, String modifiedBy, String changeLog) {
-        this.versionID = versionID;
+    public VersionControl(String modifiedBy, String dataSnapshot, String changeLog) {
+        this.versionID = UUID.randomUUID().toString();
+        this.dataSnapshot = dataSnapshot;
+        this.timestamp = new Date();
         this.modifiedBy = modifiedBy;
         this.changeLog = changeLog;
-        this.timestamp = java.time.LocalDateTime.now().toString();
+    }
+
+    // Constructor for loading from file
+    public VersionControl(String versionID, String modifiedBy, String dataSnapshot, String changeLog, Date timestamp) {
+        this.versionID = versionID;
+        this.dataSnapshot = dataSnapshot;
+        this.timestamp = timestamp;
+        this.modifiedBy = modifiedBy;
+        this.changeLog = changeLog;
+    }
+
+    public String getVersionID() { return versionID; }
+    public String getDataSnapshot() { return dataSnapshot; }
+    public Date getTimestamp() { return timestamp; }
+    public String getModifiedBy() { return modifiedBy; }
+    public String getChangeLog() { return changeLog; }
+
+    public static String getDiff(VersionControl v1, VersionControl v2) {
+        String[] oldLines = v1.getDataSnapshot().split("\n");
+        String[] newLines = v2.getDataSnapshot().split("\n");
+
+        StringBuilder diff = new StringBuilder();
+        diff.append("=== DIFF ===\n");
+
+        int maxLines = Math.max(oldLines.length, newLines.length);
+        for (int i = 0; i < maxLines; i++) {
+            String oldLine = i < oldLines.length ? oldLines[i] : "(deleted)";
+            String newLine = i < newLines.length ? newLines[i] : "(added)";
+
+            if (!oldLine.equals(newLine)) {
+                diff.append("- " + oldLine + "\n");
+                diff.append("+ " + newLine + "\n");
+            }
+        }
+        return diff.toString();
+    }
+
+    @Override
+    public String toString() {
+        String escapedSnapshot = dataSnapshot.replace("\n", "\\n").replace(",", "\\,");
+        return versionID + "|" + modifiedBy + "|" + changeLog + "|" + timestamp.getTime() + "|" + escapedSnapshot;
+    }
+
+    public static VersionControl fromString(String line) {
+        String[] parts = line.split("\\|", 5);
+        if (parts.length < 5) return null;
+        String versionID = parts[0];
+        String modifiedBy = parts[1];
+        String changeLog = parts[2];
+        long ts = Long.parseLong(parts[3]);
+        String dataSnapshot = parts[4].replace("\\n", "\n").replace("\\,", ",");
+        return new VersionControl(versionID, modifiedBy, dataSnapshot, changeLog, new Date(ts));
     }
 }

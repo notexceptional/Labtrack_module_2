@@ -1,8 +1,7 @@
 package labtrack.reports;
 
-import labtrack.util.FileManager;
-
 import java.util.List;
+import labtrack.util.FileManager;
 
 public class ReportService {
     private static final String EXPERIMENTS_FILE = "experiments.csv";

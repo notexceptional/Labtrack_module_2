@@ -1,10 +1,9 @@
 package labtrack.booking;
 
-import labtrack.util.FileManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import labtrack.util.FileManager;
 
 public class BookingService {
     private static final String PENDING_FILE = "bookings_pending.csv";

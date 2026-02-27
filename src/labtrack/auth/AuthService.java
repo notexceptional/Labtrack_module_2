@@ -1,8 +1,7 @@
 package labtrack.auth;
-
+import java.util.*;
 import labtrack.users.*;
 import labtrack.util.FileManager;
-import java.util.*;
 
 public class AuthService {
     private static final String PASSWORD = "123456";
@@ -17,15 +16,13 @@ public class AuthService {
         boolean firstRun = users.isEmpty();
 
         if (firstRun) {
-            
             System.out.print("Enter role (admin only): ");
             String role = sc.next();
             if (!role.equalsIgnoreCase("admin")) {
                 System.out.println("Only admin can login .");
                 return null;
             }
-            System.out.print("Enter password: ");
-            String pass = sc.next();
+            String pass = readPasswordMasked(sc, "Enter password: ");
             if (!pass.equals(PASSWORD)) {
                 System.out.println("Wrong password! Access denied.");
                 return null;
@@ -38,8 +35,7 @@ public class AuthService {
         String username = sc.next();
         System.out.print("Enter role: ");
         String role = sc.next();
-        System.out.print("Enter password: ");
-        String pass = sc.next();
+        String pass = readPasswordMasked(sc, "Enter password: ");
 
         if (role.equalsIgnoreCase("admin")) {
             if (!pass.equals(PASSWORD)) {
@@ -57,18 +53,22 @@ public class AuthService {
             String user = parts[1];
             String userRole = parts[2];
             String userPass = parts[3];
-            if (user.equals(username) && userRole.equalsIgnoreCase(role) && userPass.equals(pass)) {
+            if (user.equalsIgnoreCase(username) && userRole.equalsIgnoreCase(role) && userPass.equals(pass)) {
                 switch (userRole.toLowerCase()) {
-                    case "researcher":
-                        return new Researcher(id, user);
-                    case "technician":
-                        return new Technician(id, user);
-                    case "labmanager":
-                        return new LabManager(id, user);
+                    case "researcher" -> { return new Researcher(id, user); }
+                    case "technician" -> { return new Technician(id, user); }
+                    case "labmanager" -> { return new LabManager(id, user); }
                 }
             }
         }
         System.out.println("User not found or credentials incorrect.");
         return null;
+    }
+
+    private static String readPasswordMasked(Scanner sc, String prompt) {
+        System.out.print(prompt);
+        String pass = sc.next();
+        System.out.print("\033[1A\r" + prompt + "*".repeat(pass.length()) + "\n");
+        return pass;
     }
 }

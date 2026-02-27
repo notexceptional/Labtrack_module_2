@@ -1,10 +1,9 @@
 package labtrack.users;
 
-import labtrack.util.FileManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import labtrack.util.FileManager;
 
 public class Admin extends User {
     private static final String USERS_FILE = "users.csv";
@@ -15,11 +14,11 @@ public class Admin extends User {
 
     @Override
     public void showMenu() {
+
+        System.out.println("----ADMIN MENU----");
         System.out.println("1. Create User");
         System.out.println("2. Delete User");
         System.out.println("3. View All Users");
-        System.out.println("0. Logout");
-        System.out.println("10. Exit");
     }
 
     @Override
@@ -35,10 +34,6 @@ public class Admin extends User {
         if (choice == 3) {
             viewAllUsers();
             return;
-        }
-        if (choice == 10) {
-            System.out.println("Exiting application. Thank you for using Labtrack!");
-            System.exit(0);
         }
         System.out.println("Invalid choice");
     }
@@ -67,10 +62,6 @@ public class Admin extends User {
                 System.out.println("User ID already exists. User not created.");
                 return;
             }
-            if (p[1].equalsIgnoreCase(username)) {
-                System.out.println("Username already exists. User not created.");
-                return;
-            }
         }
 
         System.out.print("Enter role (researcher/technician/labmanager): ");
@@ -88,7 +79,7 @@ public class Admin extends User {
         }
 
         FileManager.write(USERS_FILE, id + "," + username + "," + role.toLowerCase() + "," + password);
-        System.out.println("User saved to " + USERS_FILE);
+        System.out.println("User saved !!");
     }
 
     private void viewAllUsers() {
