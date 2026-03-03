@@ -3,6 +3,7 @@ package labtrack.inventory;
 import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
+import labtrack.util.InputHelper;
 
 public class InventoryService {
     private static final String INVENTORY_FILE = "inventory.csv";
@@ -13,16 +14,12 @@ public class InventoryService {
         System.out.println("Select item type:");
         System.out.println("1. Necessary Item (must have daily)");
         System.out.println("2. Other Item");
-        System.out.print("Enter choice: ");
-        String typeChoice = sc.nextLine().trim();
+        String typeChoice = InputHelper.readLine("Enter choice: ");
         String type = "other";
         if (typeChoice.equals("1")) type = "necessary";
 
-        System.out.print("Enter Item Name: ");
-        String name = sc.nextLine().trim();
-
-        System.out.print("Enter Quantity: ");
-        String qtyRaw = sc.nextLine().trim();
+        String name = InputHelper.readLine("Enter Item Name: ");
+        String qtyRaw = InputHelper.readLine("Enter Quantity: ");
 
         int qty;
         try {
@@ -48,14 +45,12 @@ public class InventoryService {
             System.out.println("No inventory items found.");
             return;
         }
-        System.out.print("Enter Item Name to update: ");
-        String name = sc.nextLine().trim();
+        String name = InputHelper.readLine("Enter Item Name to update: ");
         boolean found = false;
         for (int i = 0; i < lines.size(); i++) {
             InventoryItem item = InventoryItem.fromString(lines.get(i));
             if (item != null && item.getName().equalsIgnoreCase(name)) {
-                System.out.print("Enter new quantity: ");
-                String qtyRaw = sc.nextLine().trim();
+                String qtyRaw = InputHelper.readLine("Enter new quantity: ");
                 int qty;
                 try {
                     qty = Integer.parseInt(qtyRaw);
@@ -83,8 +78,7 @@ public class InventoryService {
             System.out.println("No inventory items found.");
             return;
         }
-        System.out.print("Enter Item Name to mark as out of inventory: ");
-        String name = sc.nextLine().trim();
+        String name = InputHelper.readLine("Enter Item Name to mark as out of inventory: ");
         boolean found = false;
         for (int i = 0; i < lines.size(); i++) {
             InventoryItem item = InventoryItem.fromString(lines.get(i));

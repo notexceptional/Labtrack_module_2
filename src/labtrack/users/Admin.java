@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
+import labtrack.util.InputHelper;
 
 public class Admin extends User {
     private static final String USERS_FILE = "users.csv";
@@ -39,15 +40,13 @@ public class Admin extends User {
     }
 
     private void createUser(Scanner sc) {
-        System.out.print("Enter new user ID (digits only): ");
-        String id = sc.next();
+        String id = InputHelper.readLine("Enter new user ID (digits only): ");
         if (!id.matches("\\d+")) {
             System.out.println("User ID must be digits only.");
             return;
         }
 
-        System.out.print("Enter username (letters only): ");
-        String username = sc.next();
+        String username = InputHelper.readLine("Enter username (letters only): ");
         if (!username.matches("[A-Za-z]+")) {
             System.out.println("Username must be letters only.");
             return;
@@ -64,15 +63,13 @@ public class Admin extends User {
             }
         }
 
-        System.out.print("Enter role (researcher/technician/labmanager): ");
-        String role = sc.next();
+        String role = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
         if (!isValidRole(role) || role.equalsIgnoreCase("admin")) {
             System.out.println("Invalid role. User not created.");
             return;
         }
 
-        System.out.print("Enter password: ");
-        String password = sc.next();
+        String password = InputHelper.readPassword("Enter password: ");
         if (password.length() < 4) {
             System.out.println("Password invalid. Must be at least 4 characters.");
             return;
@@ -97,8 +94,7 @@ public class Admin extends User {
     }
 
     private void deleteUser(Scanner sc) {
-        System.out.print("Enter user ID to delete: ");
-        String targetId = sc.next();
+        String targetId = InputHelper.readLine("Enter user ID to delete: ");
 
         List<String> lines = FileManager.readAllLines(USERS_FILE);
         if (lines.isEmpty()) {

@@ -1,22 +1,11 @@
 package labtrack.auth;
-import java.io.Console;
 import java.util.*;
 import labtrack.users.*;
 import labtrack.util.FileManager;
+import labtrack.util.InputHelper;
 
 public class AuthService {
     private static final String PASSWORD = "123456";
-
-    private String readPassword(Scanner sc, String prompt) {
-        Console console = System.console();
-        if (console != null) {
-            char[] passChars = console.readPassword(prompt);
-            return passChars != null ? new String(passChars) : "";
-        } else {
-            System.out.print(prompt);
-            return sc.next();
-        }
-    }
 
     public User login() {
         Scanner sc = new Scanner(System.in);
@@ -28,13 +17,12 @@ public class AuthService {
         boolean firstRun = users.isEmpty();
 
         if (firstRun) {
-            System.out.print("Enter role (admin only): ");
-            String role = sc.next();
+            String role = InputHelper.readLine("Enter role (admin only): ");
             if (!role.equalsIgnoreCase("admin")) {
-                System.out.println("Only admin can login .");
+                System.out.println("Only admin can login.");
                 return null;
             }
-            String pass = readPassword(sc, "Enter password: ");
+            String pass = InputHelper.readPassword("Enter password: ");
             if (!pass.equals(PASSWORD)) {
                 System.out.println("Wrong password! Access denied.");
                 return null;
@@ -42,12 +30,9 @@ public class AuthService {
             return new Admin("A1", "Admin");
         }
 
-        
-        System.out.print("Enter username: ");
-        String username = sc.next();
-        System.out.print("Enter role: ");
-        String role = sc.next();
-        String pass = readPassword(sc, "Enter password: ");
+        String username = InputHelper.readLine("Enter username: ");
+        String role = InputHelper.readLine("Enter role: ");
+        String pass = InputHelper.readPassword("Enter password: ");
 
         if (role.equalsIgnoreCase("admin")) {
             if (!pass.equals(PASSWORD)) {
@@ -57,7 +42,6 @@ public class AuthService {
             return new Admin("A1", username);
         }
 
-        
         for (String line : users) {
             String[] parts = line.split(",");
             if (parts.length < 4) continue;

@@ -3,10 +3,12 @@ package labtrack.main;
 import java.util.Scanner;
 import labtrack.auth.AuthService;
 import labtrack.users.User;
+import labtrack.util.InputHelper;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        InputHelper.setScanner(sc);
         AuthService auth = new AuthService();
 
         System.out.println("---------Welcome to LABTRACK---------");
@@ -23,31 +25,21 @@ public class Main {
                 System.out.println("");
                 int choice;
                 try {
-                    choice = sc.nextInt();
-                } catch (Exception e) {
+                    choice = Integer.parseInt(InputHelper.readLine("").trim());
+                } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a number.");
-                    if (sc.hasNextLine()) {
-                        sc.nextLine();
-                    } else {
-                        System.out.println("No input available. Exiting.");
-                        System.exit(0);
-                    }
                     continue;
                 }
-                if (sc.hasNextLine()) {
-                    sc.nextLine();
-                }
-                if (choice == 000) {
+                if (choice == 0) {
                     loggedIn = false;
                 } else if (choice == 999) {
-                    System.out.println("Exiting NOW.Thank you for using LABTRACK!");
+                    System.out.println("Exiting NOW. Thank you for using LABTRACK!");
                     sc.close();
                     System.exit(0);
                 } else {
                     user.handleChoice(choice, sc);
                 }
             }
-
         }
     }
 }

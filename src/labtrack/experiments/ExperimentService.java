@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
+import labtrack.util.InputHelper;
 import labtrack.version.VersionControl;
 
 public class ExperimentService {
     private static final String VERSIONS_FILE = "experiment_versions.csv";
 
     public void addExperiment(Scanner sc) {
-        System.out.print("Enter Experiment ID: ");
-        String id = sc.nextLine().trim();
+        String id = InputHelper.readLine("Enter Experiment ID: ");
 
         List<String> existing = FileManager.readAllLines("experiments.csv");
         for (String line : existing) {
@@ -22,11 +22,8 @@ public class ExperimentService {
             }
         }
 
-        System.out.print("Enter Experiment Title: ");
-        String title = sc.nextLine();
-
-        System.out.print("Enter Description: ");
-        String desc = sc.nextLine();
+        String title = InputHelper.readLine("Enter Experiment Title: ");
+        String desc = InputHelper.readLine("Enter Description: ");
 
         Experiment exp = new Experiment(id, title, desc);
         FileManager.write("experiments.csv", exp.toString());
@@ -63,8 +60,7 @@ public class ExperimentService {
             return;
         }
 
-        System.out.print("Enter Experiment ID to modify: ");
-        String targetId = sc.nextLine().trim();
+        String targetId = InputHelper.readLine("Enter Experiment ID to modify: ");
 
             boolean found = false;
 
@@ -80,17 +76,14 @@ public class ExperimentService {
                     found = true;
 
                     System.out.println("Current Title: " + currentTitle);
-                    System.out.print("New Title (Enter to keep): ");
-                    String newTitle = sc.nextLine();
+                    String newTitle = InputHelper.readLine("New Title (Enter to keep): ");
                     if (newTitle.isBlank()) newTitle = currentTitle;
 
                     System.out.println("Current Description: " + currentDesc);
-                    System.out.print("New Description (Enter to keep): ");
-                    String newDesc = sc.nextLine();
+                    String newDesc = InputHelper.readLine("New Description (Enter to keep): ");
                     if (newDesc.isBlank()) newDesc = currentDesc;
 
-                    System.out.print("Enter change log message: ");
-                    String changeLog = sc.nextLine();
+                    String changeLog = InputHelper.readLine("Enter change log message: ");
                     if (changeLog.isBlank()) changeLog = "Modified experiment";
 
                     Experiment updated = new Experiment(id, newTitle, newDesc);
@@ -117,8 +110,7 @@ public class ExperimentService {
             return;
         }
 
-        System.out.print("Enter Experiment ID to delete: ");
-        String targetId = sc.next();
+        String targetId = InputHelper.readLine("Enter Experiment ID to delete: ");
 
         boolean found = false;
         List<String> kept = new java.util.ArrayList<>();
@@ -174,9 +166,7 @@ public class ExperimentService {
     }
 
     public void viewVersionHistory(Scanner sc) {
-        System.out.print("Enter Experiment ID to view history: ");
-        String expId = sc.next();
-        sc.nextLine();
+        String expId = InputHelper.readLine("Enter Experiment ID to view history: ");
 
         List<VersionControl> versions = loadVersions(expId);
         if (versions.isEmpty()) {
@@ -195,9 +185,7 @@ public class ExperimentService {
     }
 
     public void restoreVersion(Scanner sc) {
-        System.out.print("Enter Experiment ID: ");
-        String expId = sc.next();
-        sc.nextLine();
+        String expId = InputHelper.readLine("Enter Experiment ID: ");
 
         List<VersionControl> versions = loadVersions(expId);
         if (versions.isEmpty()) {
@@ -211,14 +199,11 @@ public class ExperimentService {
             System.out.println((i + 1) + ". " + v.getVersionID() + " - " + v.getChangeLog() + " (" + v.getTimestamp() + ")");
         }
 
-        System.out.print("Enter version number to restore: ");
         int versionNum;
         try {
-            versionNum = sc.nextInt();
-            sc.nextLine();
-        } catch (Exception e) {
+            versionNum = Integer.parseInt(InputHelper.readLine("Enter version number to restore: "));
+        } catch (NumberFormatException e) {
             System.out.println("Invalid input.");
-            sc.nextLine();
             return;
         }
 
