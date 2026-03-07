@@ -1,6 +1,6 @@
 # LabTrack 🔬
 
-**A comprehensive Laboratory Management System built with Java**
+**A comprehensive Research Laboratory Management System built with Java**
 
 ![Static Badge](https://img.shields.io/badge/language-Java-orange?style=for-the-badge&logo=openjdk&logoColor=white)
 ![Static Badge](https://img.shields.io/badge/IDE-VS%20Code-blue?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
@@ -82,7 +82,7 @@ Labtrack/
 ## Prerequisites
 
 - **Java JDK 17** or higher
-- **VS Code** with Java Extension Pack (recommended) or any Java IDE
+- **VS Code** with Java Extension Pack (recommended) or **IntelliJ IDEA 2025.3.1** or any Java IDE
 
 ---
 
@@ -220,4 +220,8 @@ This project is available for educational and academic purposes.
 
 ## Authors
 
-Developed as a Laboratory Management Solution for efficient lab operations tracking.
+** 230042105-Tiran Abdullah
+** 230042121-Md Rufayed Ul Alam
+** 230042142-Shudipto Sarwar Mamun
+
+Developed as a Research Laboratory Management Solution for efficient lab operations tracking.
