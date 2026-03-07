@@ -2,7 +2,7 @@
 
 **A comprehensive Laboratory Management System built with Java**
 
-![LabTrack](images/your-image.png)
+![LabTrack](images/Gemini_Generated_Image_t33l3ut33l3ut33l.png)
 
 LabTrack is a role-based research laboratory management system designed to streamline lab operations including user management, inventory tracking, experiment documentation, lab room reservations, and equipment borrowing. The system supports multiple user roles with tailored functionalities for each.
 
