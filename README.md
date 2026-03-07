@@ -2,6 +2,16 @@
 
 **A comprehensive Laboratory Management System built with Java**
 
+![Static Badge](https://img.shields.io/badge/language-Java-orange?style=for-the-badge&logo=openjdk&logoColor=white)
+![Static Badge](https://img.shields.io/badge/IDE-VS%20Code-blue?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
+![Static Badge](https://img.shields.io/badge/IDE-IntelliJ%20IDEA-purple?style=for-the-badge&logo=intellij%20idea&logoColor=white)
+![Version](https://img.shields.io/badge/Version-1.0-blue?style=for-the-badge&color=blue)
+![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
+![Mac](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+
+---
+
 ![LabTrack](images/Gemini_Generated_Image_t33l3ut33l3ut33l.png)
 
 LabTrack is a role-based research laboratory management system designed to streamline lab operations including user management, inventory tracking, experiment documentation, lab room reservations, and equipment borrowing. The system supports multiple user roles with tailored functionalities for each.
