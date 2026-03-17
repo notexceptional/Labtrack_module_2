@@ -26,9 +26,21 @@ public class ItemService {
         boolean any = false;
         for (String line : lines) {
             InventoryItem item = InventoryItem.fromString(line);
-            if (item == null) continue;
-            String status = item.getQuantity() > 0 ? "In Stock (" + item.getQuantity() + ")" : "Out of Stock";
-            String tag = item.getType().equals("necessary") ? " [NECESSARY]" : "";
+            if (item == null) {
+                continue;
+            }
+
+            String status;
+            if (item.getQuantity() > 0) {
+                status = "In Stock (" + item.getQuantity() + ")";
+            } else {
+                status = "Out of Stock";
+            }
+
+            String tag = "";
+            if (item.getType().equals("necessary")) {
+                tag = " [NECESSARY]";
+            }
             System.out.println("  " + item.getName() + tag + " : " + status);
             any = true;
         }
@@ -97,13 +109,26 @@ public class ItemService {
             return;
         }
 
+        boolean hasPending = hasPendingBorrowRequests(lines);
+        if (!hasPending) {
+            System.out.println("  [!] No borrow requests found.");
+            return;
+        }
+
         System.out.println();
         System.out.println("+----------------------------------------------+");
         System.out.println("|              BORROW REQUESTS                 |");
         System.out.println("+----------------------------------------------+");
         for (String line : lines) {
             String[] parts = line.split("\\|", 5);
-            if (parts.length < 4) continue;
+            if (parts.length < 4) {
+                continue;
+            }
+
+            String status = parts[3];
+            if (!status.equals("pending")) {
+                continue;
+            }
             System.out.println("+------------------------------------------+");
             System.out.println("| Requester:  " + parts[0]);
             System.out.println("| Item:       " + parts[1] + " (Qty: " + parts[2] + ")");
@@ -112,10 +137,29 @@ public class ItemService {
         }
     }
 
+    private boolean hasPendingBorrowRequests(List<String> lines) {
+        for (String line : lines) {
+            String[] parts = line.split("\\|", 5);
+            if (parts.length < 4) {
+                continue;
+            }
+            if (parts[3].equals("pending")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void approveBorrowRequest(Scanner sc) {
         List<String> lines = FileManager.readAllLines(BORROW_REQUESTS_FILE);
 
         if (lines.isEmpty()) {
+            System.out.println("  [!] No borrow requests found.");
+            return;
+        }
+
+        boolean hasPending = hasPendingBorrowRequests(lines);
+        if (!hasPending) {
             System.out.println("  [!] No borrow requests found.");
             return;
         }
@@ -135,7 +179,12 @@ public class ItemService {
         for (int i = 0; i < lines.size(); i++) {
             String[] parts = lines.get(i).split("\\|", 5);
             if (parts.length < 4) continue;
-            if (parts[0].equalsIgnoreCase(requesterName) && parts[1].equalsIgnoreCase(itemName) && parts[3].equals("pending")) {
+
+            boolean sameRequester = parts[0].equalsIgnoreCase(requesterName);
+            boolean sameItem = parts[1].equalsIgnoreCase(itemName);
+            boolean isPending = parts[3].equals("pending");
+
+            if (sameRequester && sameItem && isPending) {
                 found = true;
                 approvedQty = Integer.parseInt(parts[2]);
                 lines.set(i, parts[0] + "|" + parts[1] + "|" + parts[2] + "|approved|" + parts[4]);
@@ -156,7 +205,8 @@ public class ItemService {
                     System.out.println("  [ERROR] Not enough stock to approve. Available: " + item.getQuantity());
                     return;
                 }
-                item.updateQuantity(item.getQuantity() - approvedQty);
+                int newQuantity = item.getQuantity() - approvedQty;
+                item.updateQuantity(newQuantity);
                 invLines.set(i, item.toString());
                 break;
             }
@@ -281,7 +331,9 @@ public class ItemService {
         for (int i = 0; i < lines.size(); i++) {
             String[] parts = lines.get(i).split("\\|", 6);
             if (parts.length < 5) continue;
-            if (parts[1].equalsIgnoreCase(itemName) && parts[4].equals("pending")) {
+            boolean sameItem = parts[1].equalsIgnoreCase(itemName);
+            boolean isPending = parts[4].equals("pending");
+            if (sameItem && isPending) {
                 found = true;
                 lines.set(i, parts[0] + "|" + parts[1] + "|" + parts[2] + "|" + parts[3] + "|approved|" + parts[5]);
                 break;

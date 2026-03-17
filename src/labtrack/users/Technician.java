@@ -32,33 +32,38 @@ public class Technician extends User {
     public void handleChoice(int choice, Scanner sc) {
         InventoryService invService = new InventoryService();
         ItemService itemService = new ItemService();
-        switch (choice) {
-            case 1:
-                invService.addItemWithType(sc);
-                break;
-            case 2:
-                invService.updateItemQuantity(sc);
-                break;
-            case 3:
-                invService.markItemOut(sc);
-                break;
-            case 4:
-                invService.viewOutOfStockItems();
-                break;
-            case 5:
-                invService.viewInventory();
-                break;
-            case 6:
-                itemService.viewBorrowRequests();
-                break;
-            case 7:
-                itemService.approveBorrowRequest(sc);
-                break;
-            case 8:
-                itemService.viewBorrowedItems();
-                break;
-            default:
-                break;
+
+        if (choice == 1) {
+            invService.addItemWithType(sc);
+            return;
+        }
+        if (choice == 2) {
+            invService.updateItemQuantity(sc);
+            return;
+        }
+        if (choice == 3) {
+            invService.markItemOut(sc);
+            return;
+        }
+        if (choice == 4) {
+            invService.viewOutOfStockItems();
+            return;
+        }
+        if (choice == 5) {
+            invService.viewInventory();
+            return;
+        }
+        if (choice == 6) {
+            itemService.viewBorrowRequests();
+            return;
+        }
+        if (choice == 7) {
+            itemService.approveBorrowRequest(sc);
+            return;
+        }
+        if (choice == 8) {
+            itemService.viewBorrowedItems();
+            return;
         }
     }
 }

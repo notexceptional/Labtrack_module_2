@@ -7,8 +7,9 @@ import java.util.List;
 public class FileManager {
 
     public static void write(String file, String data) {
-        try (FileWriter fw = new FileWriter(file, true)) {
-            fw.write(data + "\n");
+        try (FileWriter fileWriter = new FileWriter(file, true)) {
+            String lineToWrite = data + "\n";
+            fileWriter.write(lineToWrite);
         } catch (IOException e) {
             System.out.println("File write error");
         }
@@ -16,14 +17,19 @@ public class FileManager {
 
     public static List<String> readAllLines(String file) {
         List<String> lines = new ArrayList<>();
-        File f = new File(file);
+        File targetFile = new File(file);
 
-        if (!f.exists()) return lines;
+        if (!targetFile.exists()) {
+            return lines;
+        }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(targetFile))) {
             String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.trim().isEmpty()) lines.add(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                String trimmedLine = line.trim();
+                if (!trimmedLine.isEmpty()) {
+                    lines.add(line);
+                }
             }
         } catch (IOException e) {
             System.out.println("File read error");
@@ -32,9 +38,10 @@ public class FileManager {
     }
 
     public static void overwrite(String file, List<String> lines) {
-        try (FileWriter fw = new FileWriter(file, false)) {
+        try (FileWriter fileWriter = new FileWriter(file, false)) {
             for (String line : lines) {
-                fw.write(line + "\n");
+                String lineToWrite = line + "\n";
+                fileWriter.write(lineToWrite);
             }
         } catch (IOException e) {
             System.out.println("File overwrite error");

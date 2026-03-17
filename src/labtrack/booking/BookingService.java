@@ -24,18 +24,21 @@ public class BookingService {
         System.out.println("|           PENDING RESERVATIONS               |");
         System.out.println("+----------------------------------------------+");
         for (String line : lines) {
-            Booking b = Booking.fromString(line);
-            if (b == null) continue;
+            Booking booking = Booking.fromString(line);
+            if (booking == null) {
+                continue;
+            }
 
             System.out.println("+------------------------------------------+");
-            System.out.println("| Booking ID:  " + b.getBookingID());
-            System.out.println("| Room:        " + b.getRoomID());
-            System.out.println("| Date:        " + b.getDateString());
-            System.out.println("| Time:        " + b.getStartTimeString() + " - " + b.getEndTimeString());
-            System.out.println("| Booked By:   " + b.getBookedBy());
+            System.out.println("| Booking ID:  " + booking.getBookingID());
+            System.out.println("| Room:        " + booking.getRoomID());
+            System.out.println("| Date:        " + booking.getDateString());
+            System.out.println("| Time:        " + booking.getStartTimeString() + " - " + booking.getEndTimeString());
+            System.out.println("| Booked By:   " + booking.getBookedBy());
             System.out.println("+------------------------------------------+");
         }
     }
+
     public void approveById(Scanner sc) {
         List<String> lines = FileManager.readAllLines(PENDING_FILE);
         if (lines.isEmpty()) {
@@ -44,7 +47,8 @@ public class BookingService {
         }
 
         String confirm = InputHelper.readLine("Approve (Y/N): ");
-        if (!confirm.equalsIgnoreCase("Y")) {
+        boolean confirmed = confirm.equalsIgnoreCase("Y");
+        if (!confirmed) {
             return;
         }
 
@@ -58,13 +62,16 @@ public class BookingService {
         String approvedLine = null;
 
         for (String line : lines) {
-            Booking b = Booking.fromString(line);
-            if (b == null) {
+            Booking booking = Booking.fromString(line);
+            if (booking == null) {
                 kept.add(line);
                 continue;
             }
 
-            if (b.getBookingID() != null && b.getBookingID().trim().equals(targetId)) {
+            String bookingId = booking.getBookingID();
+            boolean matchesTarget = bookingId != null && bookingId.trim().equals(targetId);
+
+            if (matchesTarget) {
                 approvedLine = line;
             } else {
                 kept.add(line);
@@ -99,11 +106,13 @@ public class BookingService {
     }
 
     public int countPending() {
-        return FileManager.readAllLines(PENDING_FILE).size();
+        List<String> lines = FileManager.readAllLines(PENDING_FILE);
+        return lines.size();
     }
 
     public int countApproved() {
-        return FileManager.readAllLines(APPROVED_FILE).size();
+        List<String> lines = FileManager.readAllLines(APPROVED_FILE);
+        return lines.size();
     }
 
     public void makeReservation(Scanner sc, String username) {
@@ -113,7 +122,13 @@ public class BookingService {
         String endTime = InputHelper.readLine("Enter End Time (HH:mm): ");
         String roomID = InputHelper.readLine("Enter Room ID: ");
 
-        if (bookingID.isEmpty() || date.isEmpty() || startTime.isEmpty() || endTime.isEmpty() || roomID.isEmpty()) {
+        boolean anyMissing = bookingID.isEmpty()
+                || date.isEmpty()
+                || startTime.isEmpty()
+                || endTime.isEmpty()
+                || roomID.isEmpty();
+
+        if (anyMissing) {
             System.out.println("  [ERROR] All fields are required. Reservation not created.");
             return;
         }
@@ -138,7 +153,9 @@ public class BookingService {
         System.out.println("+----------------------------------------------+");
         for (String line : lines) {
             LabRoom room = LabRoom.fromString(line);
-            if (room == null) continue;
+            if (room == null) {
+                continue;
+            }
 
             System.out.println("+------------------------------------------+");
             System.out.println("| Room ID:     " + room.getRoomID());

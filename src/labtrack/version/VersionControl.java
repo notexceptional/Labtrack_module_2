@@ -1,6 +1,7 @@
 package labtrack.version;
 
-import java.util.*;
+import java.util.Date;
+import java.util.UUID;
 
 public class VersionControl {
     private String versionID;
@@ -26,11 +27,25 @@ public class VersionControl {
         this.changeLog = changeLog;
     }
 
-    public String getVersionID() { return versionID; }
-    public String getDataSnapshot() { return dataSnapshot; }
-    public Date getTimestamp() { return timestamp; }
-    public String getModifiedBy() { return modifiedBy; }
-    public String getChangeLog() { return changeLog; }
+    public String getVersionID() {
+        return versionID;
+    }
+
+    public String getDataSnapshot() {
+        return dataSnapshot;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public String getChangeLog() {
+        return changeLog;
+    }
 
     public static String getDiff(VersionControl v1, VersionControl v2) {
         String[] oldLines = v1.getDataSnapshot().split("\n");
@@ -41,12 +56,28 @@ public class VersionControl {
 
         int maxLines = Math.max(oldLines.length, newLines.length);
         for (int i = 0; i < maxLines; i++) {
-            String oldLine = i < oldLines.length ? oldLines[i] : "(deleted)";
-            String newLine = i < newLines.length ? newLines[i] : "(added)";
+            String oldLine;
+            if (i < oldLines.length) {
+                oldLine = oldLines[i];
+            } else {
+                oldLine = "(deleted)";
+            }
+
+            String newLine;
+            if (i < newLines.length) {
+                newLine = newLines[i];
+            } else {
+                newLine = "(added)";
+            }
 
             if (!oldLine.equals(newLine)) {
-                diff.append("- " + oldLine + "\n");
-                diff.append("+ " + newLine + "\n");
+                diff.append("- ");
+                diff.append(oldLine);
+                diff.append("\n");
+
+                diff.append("+ ");
+                diff.append(newLine);
+                diff.append("\n");
             }
         }
         return diff.toString();
@@ -60,12 +91,17 @@ public class VersionControl {
 
     public static VersionControl fromString(String line) {
         String[] parts = line.split("\\|", 5);
-        if (parts.length < 5) return null;
+        if (parts.length < 5) {
+            return null;
+        }
+
         String versionID = parts[0];
         String modifiedBy = parts[1];
         String changeLog = parts[2];
         long ts = Long.parseLong(parts[3]);
         String dataSnapshot = parts[4].replace("\\n", "\n").replace("\\,", ",");
-        return new VersionControl(versionID, modifiedBy, dataSnapshot, changeLog, new Date(ts));
+
+        Date timestamp = new Date(ts);
+        return new VersionControl(versionID, modifiedBy, dataSnapshot, changeLog, timestamp);
     }
 }

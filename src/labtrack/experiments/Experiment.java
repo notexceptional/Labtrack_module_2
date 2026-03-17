@@ -17,13 +17,29 @@ public class Experiment {
         this.versionHistory = new ArrayList<>();
     }
 
-    public String getExperimentId() { return experimentId; }
-    public String getTitle() { return title; }
-    public String getDescription() { return description; }
-    public List<VersionControl> getVersionHistory() { return versionHistory; }
+    public String getExperimentId() {
+        return experimentId;
+    }
 
-    public void setTitle(String title) { this.title = title; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public List<VersionControl> getVersionHistory() {
+        return versionHistory;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     
     public void addVersion(String modifiedBy, String changeLog) {
@@ -53,12 +69,12 @@ public class Experiment {
             if (v.getVersionID().equals(versionID)) {
                 System.out.println("Restoring to version: " + versionID);
                 String snapshot = v.getDataSnapshot();
-                String[] lines = snapshot.split("\n");
-                for (String line : lines) {
-                    if (line.startsWith("title: ")) {
-                        this.title = line.substring(7);
-                    } else if (line.startsWith("description: ")) {
-                        this.description = line.substring(13);
+                String[] snapshotLines = snapshot.split("\n");
+                for (String snapshotLine : snapshotLines) {
+                    if (snapshotLine.startsWith("title: ")) {
+                        this.title = snapshotLine.substring(7);
+                    } else if (snapshotLine.startsWith("description: ")) {
+                        this.description = snapshotLine.substring(13);
                     }
                 }
                 return true;

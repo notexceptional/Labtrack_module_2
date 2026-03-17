@@ -28,34 +28,34 @@ public class Admin extends User {
 
     @Override
     public void handleChoice(int choice, Scanner sc) {
-        if (choice == 1) {
-            createUser(sc);
-            return;
+        switch (choice) {
+            case 1:
+                createUser();
+                break;
+            case 2:
+                deleteUser();
+                break;
+            case 3:
+                viewAllUsers();
+                break;
+            case 4:
+                updatePassword();
+                break;
+            default:
+                System.out.println("  [ERROR] Invalid choice");
+                break;
         }
-        if (choice == 2) {
-            deleteUser(sc);
-            return;
-        }
-        if (choice == 3) {
-            viewAllUsers();
-            return;
-        }
-        if (choice == 4) {
-            updatePassword(sc);
-            return;
-        }
-        System.out.println("  [ERROR] Invalid choice");
     }
 
-    private void createUser(Scanner sc) {
+    private void createUser() {
         String id = InputHelper.readLine("Enter new user ID (digits only): ");
         if (!id.matches("\\d+")) {
             System.out.println("  [ERROR] User ID must be digits only.");
             return;
         }
 
-        String username = InputHelper.readLine("Enter username (letters only): ");
-        if (!username.matches("[A-Za-z]+")) {
+        String newUsername = InputHelper.readLine("Enter username (letters only): ");
+        if (!newUsername.matches("[A-Za-z]+")) {
             System.out.println("  [ERROR] Username must be letters only.");
             return;
         }
@@ -71,19 +71,19 @@ public class Admin extends User {
             }
         }
 
-        String role = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
-        if (!isValidRole(role) || role.equalsIgnoreCase("admin")) {
+        String newRole = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
+        if (!isValidRole(newRole) || newRole.equalsIgnoreCase("admin")) {
             System.out.println("  [ERROR] Invalid role. User not created.");
             return;
         }
 
-        String password = InputHelper.readPassword("Enter password: ");
-        if (password.length() < 4) {
+        String newPassword = InputHelper.readPassword("Enter password: ");
+        if (newPassword.length() < 4) {
             System.out.println("  [ERROR] Password invalid. Must be at least 4 characters.");
             return;
         }
 
-        FileManager.write(USERS_FILE, id + "," + username + "," + role.toLowerCase() + "," + password);
+        FileManager.write(USERS_FILE, id + "," + newUsername + "," + newRole.toLowerCase() + "," + newPassword);
         System.out.println();
         System.out.println("  >>> User created successfully! <<<");
         System.out.println();
@@ -110,7 +110,7 @@ public class Admin extends User {
         }
     }
 
-    private void deleteUser(Scanner sc) {
+    private void deleteUser() {
         String targetId = InputHelper.readLine("Enter user ID to delete: ");
 
         List<String> lines = FileManager.readAllLines(USERS_FILE);
@@ -141,7 +141,7 @@ public class Admin extends User {
         System.out.println();
     }
 
-    private void updatePassword(Scanner sc) {
+    private void updatePassword() {
         viewAllUsers();
         String targetId = InputHelper.readLine("Enter user ID to update password: ");
 
@@ -179,8 +179,12 @@ public class Admin extends User {
     }
 
     private boolean isValidRole(String role) {
-        if (role == null) return false;
-        switch (role.toLowerCase()) {
+        if (role == null) {
+            return false;
+        }
+
+        String normalizedRole = role.toLowerCase();
+        switch (normalizedRole) {
             case "researcher":
             case "technician":
             case "labmanager":

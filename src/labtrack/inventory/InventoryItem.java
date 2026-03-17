@@ -9,7 +9,11 @@ public class InventoryItem {
     public InventoryItem(String name, int qty, String type) {
         this.name = name;
         this.quantity = qty;
-        this.type = type == null ? "other" : type.toLowerCase();
+        if (type == null) {
+            this.type = "other";
+        } else {
+            this.type = type.toLowerCase();
+        }
     }
 
 
@@ -40,20 +44,34 @@ public class InventoryItem {
     }
 
     public static InventoryItem fromString(String line) {
-        if (line == null) return null;
+        if (line == null) {
+            return null;
+        }
         String[] parts = line.split(",", 3);
-        if (parts.length < 2) return null;
+        if (parts.length < 2) {
+            return null;
+        }
         int qty;
         try {
             qty = Integer.parseInt(parts[1].trim());
         } catch (NumberFormatException e) {
             return null;
         }
-        String type = parts.length == 3 ? parts[2] : "other";
-        return new InventoryItem(parts[0], qty, type);
+
+        String parsedType;
+        if (parts.length == 3) {
+            parsedType = parts[2];
+        } else {
+            parsedType = "other";
+        }
+
+        return new InventoryItem(parts[0], qty, parsedType);
     }
 
     private static String safe(String s) {
-        return s == null ? "" : s;
+        if (s == null) {
+            return "";
+        }
+        return s;
     }
 }

@@ -15,7 +15,8 @@ public abstract class User {
     }
 
     public boolean login(String inputPassword) {
-        return password.equals(inputPassword);
+        boolean matches = password.equals(inputPassword);
+        return matches;
     }
 
     public void logout() {

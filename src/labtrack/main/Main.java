@@ -7,9 +7,9 @@ import labtrack.util.InputHelper;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        InputHelper.setScanner(sc);
-        AuthService auth = new AuthService();
+        Scanner scanner = new Scanner(System.in);
+        InputHelper.setScanner(scanner);
+        AuthService authService = new AuthService();
 
         System.out.println();
         System.out.println("**************************************************");
@@ -19,8 +19,10 @@ public class Main {
         System.out.println("**************************************************");
         System.out.println();
         while (true) {
-            User user = auth.login(sc);
-            if (user == null) continue;
+            User user = authService.login(scanner);
+            if (user == null) {
+                continue;
+            }
 
             boolean loggedIn = true;
             while (loggedIn) {
@@ -39,21 +41,26 @@ public class Main {
                     System.out.println("Invalid input. Please enter a number.");
                     continue;
                 }
-                if (choice == 0) {
-                    System.out.println();
-                    System.out.println(">>> Logged out successfully! <<<");
-                    System.out.println();
-                    loggedIn = false;
-                } else if (choice == 999) {
-                    System.out.println();
-                    System.out.println("**************************************************");
-                    System.out.println("*      Thank you for using LABTRACK!            *");
-                    System.out.println("**************************************************");
-                    System.out.println();
-                    sc.close();
-                    System.exit(0);
-                } else {
-                    user.handleChoice(choice, sc);
+
+                switch (choice) {
+                    case 0:
+                        System.out.println();
+                        System.out.println(">>> Logged out successfully! <<<");
+                        System.out.println();
+                        loggedIn = false;
+                        break;
+                    case 999:
+                        System.out.println();
+                        System.out.println("**************************************************");
+                        System.out.println("*      Thank you for using LABTRACK!            *");
+                        System.out.println("**************************************************");
+                        System.out.println();
+                        scanner.close();
+                        System.exit(0);
+                        break;
+                    default:
+                        user.handleChoice(choice, scanner);
+                        break;
                 }
             }
 

@@ -29,6 +29,7 @@ public class ReportService {
 
     private int countLines(String file) {
         List<String> lines = FileManager.readAllLines(file);
-        return lines.size();
+        int count = lines.size();
+        return count;
     }
 }

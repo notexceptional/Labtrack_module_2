@@ -33,22 +33,22 @@ public class LabManager extends User {
         ReportService reportService = new ReportService();
         ItemService itemService = new ItemService();
 
-        if (choice == 1) {
-            bookingService.listPending();
-            bookingService.approveById(sc);
-            return;
-        }
-        if (choice == 2) {
-            reportService.printSummaryReport();
-            return;
-        }
-        if (choice == 3) {
-            itemService.viewAllRequests();
-            return;
-        }
-        if (choice == 4) {
-            itemService.approveRequest(sc);
-            return;
+        switch (choice) {
+            case 1:
+                bookingService.listPending();
+                bookingService.approveById(sc);
+                break;
+            case 2:
+                reportService.printSummaryReport();
+                break;
+            case 3:
+                itemService.viewAllRequests();
+                break;
+            case 4:
+                itemService.approveRequest(sc);
+                break;
+            default:
+                break;
         }
     }
 }

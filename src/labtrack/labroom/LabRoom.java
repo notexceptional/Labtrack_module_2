@@ -35,13 +35,20 @@ public class LabRoom {
     }
 
     public static LabRoom fromString(String line) {
-        if (line == null) return null;
+        if (line == null) {
+            return null;
+        }
         String[] parts = line.split(",", 4);
-        if (parts.length != 4) return null;
+        if (parts.length != 4) {
+            return null;
+        }
         return new LabRoom(parts[0], parts[1], parts[2], parts[3]);
     }
 
     private static String safe(String s) {
-        return s == null ? "" : s;
+        if (s == null) {
+            return "";
+        }
+        return s;
     }
 }

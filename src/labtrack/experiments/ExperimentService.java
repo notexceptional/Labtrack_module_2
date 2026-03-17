@@ -67,44 +67,55 @@ public class ExperimentService {
 
         String targetId = InputHelper.readLine("Enter Experiment ID to modify: ");
 
-            boolean found = false;
+        boolean found = false;
 
-            for (int i = 0; i < lines.size(); i++) {
-                String[] p = lines.get(i).split(",", 3);
-                if (p.length < 3) continue;
-
-                String id = p[0].trim();
-                String currentTitle = p[1];
-                String currentDesc = p[2];
-
-                if (id.equals(targetId)) {
-                    found = true;
-
-                    System.out.println("Current Title: " + currentTitle);
-                    String newTitle = InputHelper.readLine("New Title (Enter to keep): ");
-                    if (newTitle.isBlank()) newTitle = currentTitle;
-
-                    System.out.println("Current Description: " + currentDesc);
-                    String newDesc = InputHelper.readLine("New Description (Enter to keep): ");
-                    if (newDesc.isBlank()) newDesc = currentDesc;
-
-                    String changeLog = InputHelper.readLine("Enter change log message: ");
-                    if (changeLog.isBlank()) changeLog = "Modified experiment";
-
-                    Experiment updated = new Experiment(id, newTitle, newDesc);
-                    lines.set(i, updated.toString());
-
-                    saveVersion(id, "user", "title: " + newTitle + "\ndescription: " + newDesc, changeLog);
-                    break;
-                }
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            String[] parts = line.split(",", 3);
+            if (parts.length < 3) {
+                continue;
             }
 
-            if (!found) {
-                System.out.println("  [ERROR] Experiment not found.");
-                return;
+            String id = parts[0].trim();
+            String currentTitle = parts[1];
+            String currentDesc = parts[2];
+
+            if (!id.equals(targetId)) {
+                continue;
             }
 
-            FileManager.overwrite("experiments.csv", lines);
+            found = true;
+
+            System.out.println("Current Title: " + currentTitle);
+            String newTitle = InputHelper.readLine("New Title (Enter to keep): ");
+            if (newTitle.trim().isEmpty()) {
+                newTitle = currentTitle;
+            }
+
+            System.out.println("Current Description: " + currentDesc);
+            String newDesc = InputHelper.readLine("New Description (Enter to keep): ");
+            if (newDesc.trim().isEmpty()) {
+                newDesc = currentDesc;
+            }
+
+            String changeLog = InputHelper.readLine("Enter change log message: ");
+            if (changeLog.trim().isEmpty()) {
+                changeLog = "Modified experiment";
+            }
+
+            Experiment updated = new Experiment(id, newTitle, newDesc);
+            lines.set(i, updated.toString());
+
+            saveVersion(id, "user", "title: " + newTitle + "\ndescription: " + newDesc, changeLog);
+            break;
+        }
+
+        if (!found) {
+            System.out.println("  [ERROR] Experiment not found.");
+            return;
+        }
+
+        FileManager.overwrite("experiments.csv", lines);
         System.out.println();
         System.out.println("  >>> Experiment updated successfully! <<<");
         System.out.println();
@@ -120,7 +131,7 @@ public class ExperimentService {
         String targetId = InputHelper.readLine("Enter Experiment ID to delete: ");
 
         boolean found = false;
-        List<String> kept = new java.util.ArrayList<>();
+        List<String> kept = new ArrayList<>();
         for (String line : lines) {
             String[] p = line.split(",", 3);
             if (p.length < 3) continue;
@@ -231,12 +242,12 @@ public class ExperimentService {
 
         String newTitle = "";
         String newDesc = "";
-        String[] lines = snapshot.split("\n");
-        for (String line : lines) {
-            if (line.startsWith("title: ")) {
-                newTitle = line.substring(7);
-            } else if (line.startsWith("description: ")) {
-                newDesc = line.substring(13);
+        String[] snapshotLines = snapshot.split("\n");
+        for (String snapshotLine : snapshotLines) {
+            if (snapshotLine.startsWith("title: ")) {
+                newTitle = snapshotLine.substring(7);
+            } else if (snapshotLine.startsWith("description: ")) {
+                newDesc = snapshotLine.substring(13);
             }
         }
 

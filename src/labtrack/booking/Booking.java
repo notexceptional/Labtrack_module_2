@@ -46,64 +46,134 @@ public class Booking {
     }
 
     public LocalDate getDate() {
-        if (date == null || date.trim().isEmpty()) return null;
+        if (date == null) {
+            return null;
+        }
+
+        String trimmedDate = date.trim();
+        if (trimmedDate.isEmpty()) {
+            return null;
+        }
         try {
-            return LocalDate.parse(date.trim());
+            return LocalDate.parse(trimmedDate);
         } catch (DateTimeParseException e) {
             return null;
         }
     }
+
     public LocalTime getStartTime() {
         return parseTime(startTime);
     }
+
     public LocalTime getEndTime() {
         return parseTime(endTime);
     }
 
     public boolean isValidTimeRange() {
-        LocalTime s = getStartTime();
-        LocalTime e = getEndTime();
-        return s != null && e != null && s.isBefore(e);
+        LocalTime start = getStartTime();
+        LocalTime end = getEndTime();
+        if (start == null) {
+            return false;
+        }
+        if (end == null) {
+            return false;
+        }
+        return start.isBefore(end);
     }
 
     public boolean overlaps(Booking other) {
-        if (other == null) return false;
-        if (roomID == null || other.roomID == null) return false;
-        if (!roomID.equals(other.roomID)) return false;
+        if (other == null) {
+            return false;
+        }
 
-        LocalDate d1 = getDate();
-        LocalDate d2 = other.getDate();
-        if (d1 == null || d2 == null || !d1.equals(d2)) return false;
+        if (roomID == null) {
+            return false;
+        }
+        if (other.roomID == null) {
+            return false;
+        }
 
-        LocalTime s1 = getStartTime();
-        LocalTime e1 = getEndTime();
-        LocalTime s2 = other.getStartTime();
-        LocalTime e2 = other.getEndTime();
-        if (s1 == null || e1 == null || s2 == null || e2 == null) return false;
-        return s1.isBefore(e2) && s2.isBefore(e1);
+        boolean sameRoom = roomID.equals(other.roomID);
+        if (!sameRoom) {
+            return false;
+        }
+
+        LocalDate thisDate = getDate();
+        LocalDate otherDate = other.getDate();
+        if (thisDate == null) {
+            return false;
+        }
+        if (otherDate == null) {
+            return false;
+        }
+
+        boolean sameDate = thisDate.equals(otherDate);
+        if (!sameDate) {
+            return false;
+        }
+
+        LocalTime thisStart = getStartTime();
+        LocalTime thisEnd = getEndTime();
+        LocalTime otherStart = other.getStartTime();
+        LocalTime otherEnd = other.getEndTime();
+
+        if (thisStart == null || thisEnd == null || otherStart == null || otherEnd == null) {
+            return false;
+        }
+
+        boolean thisStartsBeforeOtherEnds = thisStart.isBefore(otherEnd);
+        boolean otherStartsBeforeThisEnds = otherStart.isBefore(thisEnd);
+        return thisStartsBeforeOtherEnds && otherStartsBeforeThisEnds;
     }
+
     @Override
     public String toString() {
-        return safe(bookingID) + "," + safe(date) + "," + safe(startTime) + "," + safe(endTime) + "," + safe(roomID) + "," + safe(bookedBy);
+        StringBuilder builder = new StringBuilder();
+        builder.append(safe(bookingID));
+        builder.append(",");
+        builder.append(safe(date));
+        builder.append(",");
+        builder.append(safe(startTime));
+        builder.append(",");
+        builder.append(safe(endTime));
+        builder.append(",");
+        builder.append(safe(roomID));
+        builder.append(",");
+        builder.append(safe(bookedBy));
+        return builder.toString();
     }
 
     public static Booking fromString(String line) {
-        if (line == null) return null;
+        if (line == null) {
+            return null;
+        }
         String[] parts = line.split(",", 6);
-        if (parts.length != 6) return null;
+        if (parts.length != 6) {
+            return null;
+        }
         return new Booking(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
     }
 
     private static LocalTime parseTime(String value) {
-        if (value == null || value.trim().isEmpty()) return null;
+        if (value == null) {
+            return null;
+        }
+
+        String trimmedValue = value.trim();
+        if (trimmedValue.isEmpty()) {
+            return null;
+        }
         try {
-            return LocalTime.parse(value.trim());
+            return LocalTime.parse(trimmedValue);
         } catch (DateTimeParseException e) {
             return null;
         }
     }
 
     private static String safe(String s) {
-        return s == null ? "" : s;
+        if (s == null) {
+            return "";
+        }
+        return s;
     }
 }

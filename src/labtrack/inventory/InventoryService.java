@@ -17,7 +17,9 @@ public class InventoryService {
         System.out.println("  [2] Other Item");
         String typeChoice = InputHelper.readLine("Enter choice: ");
         String type = "other";
-        if (typeChoice.equals("1")) type = "necessary";
+        if (typeChoice.equals("1")) {
+            type = "necessary";
+        }
 
         String name = InputHelper.readLine("Enter Item Name: ");
         String qtyRaw = InputHelper.readLine("Enter Quantity: ");
@@ -114,7 +116,10 @@ public class InventoryService {
         for (String line : lines) {
             InventoryItem item = InventoryItem.fromString(line);
             if (item != null && item.getQuantity() == 0) {
-                String tag = item.getType().equals("necessary") ? " (NECESSARY)" : "";
+                String tag = "";
+                if (item.getType().equals("necessary")) {
+                    tag = " (NECESSARY)";
+                }
                 System.out.println("  - " + item.getName() + tag);
                 any = true;
             }
@@ -138,9 +143,21 @@ public class InventoryService {
         System.out.println("+----------------------------------------------+");
         for (String line : lines) {
             InventoryItem item = InventoryItem.fromString(line);
-            if (item == null) continue;
-            String status = item.getQuantity() > 0 ? "In Stock" : "OUT OF STOCK";
-            String tag = item.getType().equals("necessary") ? " [NECESSARY]" : "";
+            if (item == null) {
+                continue;
+            }
+
+            String status;
+            if (item.getQuantity() > 0) {
+                status = "In Stock";
+            } else {
+                status = "OUT OF STOCK";
+            }
+
+            String tag = "";
+            if (item.getType().equals("necessary")) {
+                tag = " [NECESSARY]";
+            }
             System.out.println("+------------------------------------------+");
             System.out.println("| Name:     " + item.getName() + tag);
             System.out.println("| Quantity: " + item.getQuantity());

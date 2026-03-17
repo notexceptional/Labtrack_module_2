@@ -1,6 +1,12 @@
 package labtrack.auth;
-import java.util.*;
-import labtrack.users.*;
+
+import java.util.List;
+import java.util.Scanner;
+import labtrack.users.Admin;
+import labtrack.users.LabManager;
+import labtrack.users.Researcher;
+import labtrack.users.Technician;
+import labtrack.users.User;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
 
@@ -69,10 +75,15 @@ public class AuthService {
                 System.out.println();
                 System.out.println("  >>> Welcome, " + user + "! <<<");
                 System.out.println();
-                switch (userRole.toLowerCase()) {
-                    case "researcher" -> { return new Researcher(id, user); }
-                    case "technician" -> { return new Technician(id, user); }
-                    case "labmanager" -> { return new LabManager(id, user); }
+                String normalizedRole = userRole.toLowerCase();
+                if (normalizedRole.equals("researcher")) {
+                    return new Researcher(id, user);
+                }
+                if (normalizedRole.equals("technician")) {
+                    return new Technician(id, user);
+                }
+                if (normalizedRole.equals("labmanager")) {
+                    return new LabManager(id, user);
                 }
             }
         }

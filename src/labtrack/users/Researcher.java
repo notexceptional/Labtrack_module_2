@@ -42,42 +42,50 @@ public class Researcher extends User {
         ExperimentService expService = new ExperimentService();
         ItemService itemService = new ItemService();
         BookingService bookingService = new BookingService();
-        switch (choice) {
-            case 1:
-                expService.addExperiment(sc);
-                break;
-            case 2:
-                expService.viewExperiments();
-                break;
-            case 3:
-                expService.modifyExperiment(sc);
-                break;
-            case 6:
-                expService.viewVersionHistory(sc);
-                break;
-            case 7:
-                expService.restoreVersion(sc);
-                break;
-            case 10:
-                itemService.viewAvailableItems();
-                break;
-            case 11:
-                itemService.borrowItem(sc, username);
-                break;
-            case 12:
-                itemService.requestNewItem(sc, username);
-                break;
-            case 20:
-                expService.deleteExperiment(sc);
-                break;
-            case 21:
-                bookingService.makeReservation(sc, username);
-                break;
-            case 22:
-                bookingService.viewBookedRooms();
-                break;
-            default:
-                break;
+
+        if (choice == 1) {
+            expService.addExperiment(sc);
+            return;
+        }
+        if (choice == 2) {
+            expService.viewExperiments();
+            return;
+        }
+        if (choice == 3) {
+            expService.modifyExperiment(sc);
+            return;
+        }
+        if (choice == 6) {
+            expService.viewVersionHistory(sc);
+            return;
+        }
+        if (choice == 7) {
+            expService.restoreVersion(sc);
+            return;
+        }
+        if (choice == 10) {
+            itemService.viewAvailableItems();
+            return;
+        }
+        if (choice == 11) {
+            itemService.borrowItem(sc, username);
+            return;
+        }
+        if (choice == 12) {
+            itemService.requestNewItem(sc, username);
+            return;
+        }
+        if (choice == 20) {
+            expService.deleteExperiment(sc);
+            return;
+        }
+        if (choice == 21) {
+            bookingService.makeReservation(sc, username);
+            return;
+        }
+        if (choice == 22) {
+            bookingService.viewBookedRooms();
+            return;
         }
     }
 }
