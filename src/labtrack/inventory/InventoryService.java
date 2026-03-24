@@ -1,20 +1,21 @@
 package labtrack.inventory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
+import labtrack.util.Colors;
+import labtrack.util.TablePrinter;
 
 public class InventoryService {
     private static final String INVENTORY_FILE = "inventory.csv";
 
-
-
     public void addItemWithType(Scanner sc) {
         System.out.println();
-        System.out.println("  ~~~ Select Item Type ~~~");
-        System.out.println("  [1] Necessary Item (must have daily)");
-        System.out.println("  [2] Other Item");
+        System.out.println(Colors.colorize("  ~~~ Select Item Type ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("1", Colors.YELLOW_BOLD) + "] Necessary Item (must have daily)");
+        System.out.println("  [" + Colors.colorize("2", Colors.YELLOW_BOLD) + "] Other Item");
         String typeChoice = InputHelper.readLine("Enter choice: ");
         String type = "other";
         if (typeChoice.equals("1")) {
@@ -28,26 +29,26 @@ public class InventoryService {
         try {
             qty = Integer.parseInt(qtyRaw);
         } catch (NumberFormatException e) {
-            System.out.println("  [ERROR] Invalid quantity.");
+            Colors.error("Invalid quantity.");
             return;
         }
 
         if (name.isEmpty()) {
-            System.out.println("  [ERROR] Item name cannot be empty.");
+            Colors.error("Item name cannot be empty.");
             return;
         }
 
         InventoryItem item = new InventoryItem(name, qty, type);
         FileManager.write(INVENTORY_FILE, item.toString());
         System.out.println();
-        System.out.println("  >>> Inventory item added! <<<");
+        Colors.success("Inventory item added!");
         System.out.println();
     }
 
     public void updateItemQuantity(Scanner sc) {
         List<String> lines = FileManager.readAllLines(INVENTORY_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No inventory items found.");
+            Colors.warning("No inventory items found.");
             return;
         }
         String name = InputHelper.readLine("Enter Item Name to update: ");
@@ -60,7 +61,7 @@ public class InventoryService {
                 try {
                     qty = Integer.parseInt(qtyRaw);
                 } catch (NumberFormatException e) {
-                    System.out.println("  [ERROR] Invalid quantity.");
+                    Colors.error("Invalid quantity.");
                     return;
                 }
                 item.updateQuantity(qty);
@@ -70,19 +71,19 @@ public class InventoryService {
             }
         }
         if (!found) {
-            System.out.println("  [ERROR] Item not found.");
+            Colors.error("Item not found.");
             return;
         }
         FileManager.overwrite(INVENTORY_FILE, lines);
         System.out.println();
-        System.out.println("  >>> Item quantity updated! <<<");
+        Colors.success("Item quantity updated!");
         System.out.println();
     }
 
     public void markItemOut(Scanner sc) {
         List<String> lines = FileManager.readAllLines(INVENTORY_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No inventory items found.");
+            Colors.warning("No inventory items found.");
             return;
         }
         String name = InputHelper.readLine("Enter Item Name to mark as out of inventory: ");
@@ -97,72 +98,48 @@ public class InventoryService {
             }
         }
         if (!found) {
-            System.out.println("  [ERROR] Item not found.");
+            Colors.error("Item not found.");
             return;
         }
         FileManager.overwrite(INVENTORY_FILE, lines);
         System.out.println();
-        System.out.println("  >>> Item marked as out of inventory! <<<");
+        Colors.success("Item marked as out of inventory!");
         System.out.println();
     }
 
     public void viewOutOfStockItems() {
         List<String> lines = FileManager.readAllLines(INVENTORY_FILE);
-        boolean any = false;
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|           OUT-OF-STOCK ITEMS                 |");
-        System.out.println("+----------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
+        
         for (String line : lines) {
             InventoryItem item = InventoryItem.fromString(line);
             if (item != null && item.getQuantity() == 0) {
-                String tag = "";
-                if (item.getType().equals("necessary")) {
-                    tag = " (NECESSARY)";
-                }
-                System.out.println("  - " + item.getName() + tag);
-                any = true;
+                String tag = item.getType().equals("necessary") ? "[NECESSARY]" : "";
+                rows.add(new String[]{item.getName(), tag});
             }
         }
-        if (!any) {
-            System.out.println("  [!] No items are out of stock.");
-        }
+        
+        String[] headers = {"Item Name", "Notes"};
+        TablePrinter.printTable("Out-of-Stock Items", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 
     public void viewInventory() {
         List<String> lines = FileManager.readAllLines(INVENTORY_FILE);
+        List<String[]> rows = new ArrayList<>();
 
-        if (lines.isEmpty()) {
-            System.out.println("  [!] No inventory items found.");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|                INVENTORY                     |");
-        System.out.println("+----------------------------------------------+");
         for (String line : lines) {
             InventoryItem item = InventoryItem.fromString(line);
-            if (item == null) {
-                continue;
-            }
+            if (item == null) continue;
 
-            String status;
-            if (item.getQuantity() > 0) {
-                status = "In Stock";
-            } else {
-                status = "OUT OF STOCK";
-            }
-
-            String tag = "";
-            if (item.getType().equals("necessary")) {
-                tag = " [NECESSARY]";
-            }
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Name:     " + item.getName() + tag);
-            System.out.println("| Quantity: " + item.getQuantity());
-            System.out.println("| Status:   " + status);
-            System.out.println("+------------------------------------------+");
+            String status = (item.getQuantity() > 0) ? Colors.colorize("In Stock", Colors.GREEN) : Colors.colorize("OUT OF STOCK", Colors.RED_BOLD);
+            String tag = item.getType().equals("necessary") ? Colors.colorize("[NECESSARY]", Colors.PURPLE_BOLD) : "";
+            
+            rows.add(new String[]{item.getName() + " " + tag, String.valueOf(item.getQuantity()), status});
         }
+
+        String[] headers = {"Item Name", "Qty", "Status"};
+        TablePrinter.printTable("Current Inventory", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 }

@@ -3,6 +3,7 @@ package labtrack.main;
 import java.util.Scanner;
 import labtrack.auth.AuthService;
 import labtrack.users.User;
+import labtrack.util.Colors;
 import labtrack.util.InputHelper;
 
 public class Main {
@@ -11,49 +12,50 @@ public class Main {
         InputHelper.setScanner(scanner);
         AuthService authService = new AuthService();
 
-        System.out.println();
-        System.out.println("**************************************************");
-        System.out.println("*                                                *");
-        System.out.println("*           Welcome to LABTRACK                  *");
-        System.out.println("*                                                *");
-        System.out.println("**************************************************");
-        System.out.println();
+        printWelcomeBanner();
+
         while (true) {
+            Colors.header("Login");
             User user = authService.login(scanner);
             if (user == null) {
+                Colors.error("Login failed. Please try again.");
                 continue;
             }
+
+            Colors.success("Welcome, " + user.getUsername() + "!");
 
             boolean loggedIn = true;
             while (loggedIn) {
                 System.out.println();
                 user.showMenu();
                 System.out.println();
-                System.out.println("----------------------------------------------");
-                System.out.println("  [0] Logout");
-                System.out.println("  [999] Exit");
-                System.out.println("----------------------------------------------");
+                System.out.println(Colors.colorize("----------------------------------------------", Colors.CYAN));
+                System.out.println("  [" + Colors.colorize("0", Colors.YELLOW_BOLD) + "] Logout");
+                System.out.println("  [" + Colors.colorize("999", Colors.RED_BOLD) + "] Exit");
+                System.out.println(Colors.colorize("----------------------------------------------", Colors.CYAN));
                 System.out.println();
+                
+                String choiceStr = InputHelper.readLine("Enter choice: ");
                 int choice;
                 try {
-                    choice = Integer.parseInt(InputHelper.readLine(""));
+                    choice = Integer.parseInt(choiceStr);
                 } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a number.");
+                    Colors.error("Invalid input. Please enter a number.");
                     continue;
                 }
 
                 switch (choice) {
                     case 0:
                         System.out.println();
-                        System.out.println(">>> Logged out successfully! <<<");
+                        Colors.success("Logged out successfully!");
                         System.out.println();
                         loggedIn = false;
                         break;
                     case 999:
                         System.out.println();
-                        System.out.println("**************************************************");
-                        System.out.println("*      Thank you for using LABTRACK!            *");
-                        System.out.println("**************************************************");
+                        System.out.println(Colors.colorize("**************************************************", Colors.CYAN));
+                        System.out.println(Colors.colorize("*      Thank you for using LABTRACK!            *", Colors.CYAN_BOLD));
+                        System.out.println(Colors.colorize("**************************************************", Colors.CYAN));
                         System.out.println();
                         scanner.close();
                         System.exit(0);
@@ -63,7 +65,18 @@ public class Main {
                         break;
                 }
             }
-
         }
+    }
+
+    private static void printWelcomeBanner() {
+        System.out.println(Colors.colorize("                                                        ", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize("  _           _      ____    _____   ____       _       ____   _  __", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize(" | |         / \\    | __ )  |_   _| |  _ \\     / \\     / ___| | |/ /", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize(" | |        / _ \\   |  _ \\    | |   | |_) |   / _ \\   | |     | ' / ", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize(" | |___    / ___ \\  | |_) |   | |   |  _ <   / ___ \\  | |___  | . \\ ", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize(" |_____|  /_/   \\_\\ |____/    |_|   |_| \\_\\ /_/   \\_\\  \\____| |_|\\_\\", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize("                                                                    ", Colors.BLUE_BOLD));
+        System.out.println(Colors.colorize("           Research Laboratory Management System            ", Colors.CYAN));
+        System.out.println();
     }
 }

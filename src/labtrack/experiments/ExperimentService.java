@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
+import labtrack.util.Colors;
+import labtrack.util.TablePrinter;
 import labtrack.version.VersionControl;
 
 public class ExperimentService {
@@ -17,7 +19,7 @@ public class ExperimentService {
         for (String line : existing) {
             String[] p = line.split(",", 3);
             if (p.length >= 1 && p[0].trim().equals(id)) {
-                System.out.println("  [ERROR] Experiment ID already exists. Experiment not created.");
+                Colors.error("Experiment ID already exists. Experiment not created.");
                 return;
             }
         }
@@ -30,38 +32,20 @@ public class ExperimentService {
 
         saveVersion(id, "system", "title: " + title + "\ndescription: " + desc, "Initial creation");
         System.out.println();
-        System.out.println("  >>> Experiment added successfully! <<<");
+        Colors.success("Experiment added successfully!");
         System.out.println();
     }
 
     public void viewExperiments() {
-        List<String> lines = FileManager.readAllLines("experiments.csv");
-
-        if (lines.isEmpty()) {
-            System.out.println("  [!] No experiments found.");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|               EXPERIMENTS                    |");
-        System.out.println("+----------------------------------------------+");
-        for (String line : lines) {
-            String[] p = line.split(",", 3);
-            if (p.length < 3) continue;
-
-            System.out.println("+------------------------------------------+");
-            System.out.println("| ID:          " + p[0]);
-            System.out.println("| Title:       " + p[1]);
-            System.out.println("| Description: " + p[2]);
-            System.out.println("+------------------------------------------+");
-        }
+        String[] headers = {"ID", "Title", "Description"};
+        TablePrinter.printCsvAsTable("All Experiments", "experiments.csv", headers);
+        InputHelper.pressEnterToContinue();
     }
 
     public void modifyExperiment(Scanner sc) {
         List<String> lines = FileManager.readAllLines("experiments.csv");
         if (lines.isEmpty()) {
-            System.out.println("  [!] No experiments found.");
+            Colors.warning("No experiments found.");
             return;
         }
 
@@ -86,13 +70,13 @@ public class ExperimentService {
 
             found = true;
 
-            System.out.println("Current Title: " + currentTitle);
+            System.out.println(Colors.colorize("Current Title: ", Colors.BLUE) + currentTitle);
             String newTitle = InputHelper.readLine("New Title (Enter to keep): ");
             if (newTitle.trim().isEmpty()) {
                 newTitle = currentTitle;
             }
 
-            System.out.println("Current Description: " + currentDesc);
+            System.out.println(Colors.colorize("Current Description: ", Colors.BLUE) + currentDesc);
             String newDesc = InputHelper.readLine("New Description (Enter to keep): ");
             if (newDesc.trim().isEmpty()) {
                 newDesc = currentDesc;
@@ -111,20 +95,20 @@ public class ExperimentService {
         }
 
         if (!found) {
-            System.out.println("  [ERROR] Experiment not found.");
+            Colors.error("Experiment not found.");
             return;
         }
 
         FileManager.overwrite("experiments.csv", lines);
         System.out.println();
-        System.out.println("  >>> Experiment updated successfully! <<<");
+        Colors.success("Experiment updated successfully!");
         System.out.println();
     }
 
     public void deleteExperiment(Scanner sc) {
         List<String> lines = FileManager.readAllLines("experiments.csv");
         if (lines.isEmpty()) {
-            System.out.println("  [!] No experiments found.");
+            Colors.warning("No experiments found.");
             return;
         }
 
@@ -144,14 +128,14 @@ public class ExperimentService {
         }
 
         if (!found) {
-            System.out.println("  [ERROR] Experiment not found.");
+            Colors.error("Experiment not found.");
             return;
         }
 
         FileManager.overwrite("experiments.csv", kept);
         deleteVersions(targetId);
         System.out.println();
-        System.out.println("  >>> Experiment deleted successfully! <<<");
+        Colors.success("Experiment deleted successfully!");
         System.out.println();
     }
 
@@ -190,22 +174,17 @@ public class ExperimentService {
 
         List<VersionControl> versions = loadVersions(expId);
         if (versions.isEmpty()) {
-            System.out.println("  [!] No versions yet.");
+            Colors.warning("No versions found for ID: " + expId);
             return;
         }
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|        VERSION HISTORY: " + expId);
-        System.out.println("+----------------------------------------------+");
+        String[] headers = {"Ver ID", "User", "Timestamp", "Log"};
+        List<String[]> rows = new ArrayList<>();
         for (VersionControl v : versions) {
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Version:     " + v.getVersionID());
-            System.out.println("| Modified By: " + v.getModifiedBy());
-            System.out.println("| Timestamp:   " + v.getTimestamp());
-            System.out.println("| Change:      " + v.getChangeLog());
-            System.out.println("+------------------------------------------+");
+            rows.add(new String[]{v.getVersionID(), v.getModifiedBy(), String.valueOf(v.getTimestamp()), v.getChangeLog()});
         }
+        TablePrinter.printTable("Version History: " + expId, headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 
     public void restoreVersion(Scanner sc) {
@@ -213,7 +192,7 @@ public class ExperimentService {
 
         List<VersionControl> versions = loadVersions(expId);
         if (versions.isEmpty()) {
-            System.out.println("  [!] No versions found for this experiment.");
+            Colors.warning("No versions found for this experiment.");
             return;
         }
 
@@ -224,20 +203,21 @@ public class ExperimentService {
             System.out.println("  [" + (i + 1) + "] " + v.getVersionID() + " - " + v.getChangeLog());
         }
 
-        int versionNum;
+        String verRaw = InputHelper.readLine("Enter version number to restore: ");
+        int ver;
         try {
-            versionNum = Integer.parseInt(InputHelper.readLine("Enter version number to restore: "));
+            ver = Integer.parseInt(verRaw);
         } catch (NumberFormatException e) {
-            System.out.println("  [ERROR] Invalid input.");
+            Colors.error("Invalid input.");
             return;
         }
 
-        if (versionNum < 1 || versionNum > versions.size()) {
-            System.out.println("  [ERROR] Invalid version number.");
+        if (ver < 1 || ver > versions.size()) {
+            Colors.error("Invalid version number.");
             return;
         }
 
-        VersionControl selected = versions.get(versionNum - 1);
+        VersionControl selected = versions.get(ver - 1);
         String snapshot = selected.getDataSnapshot();
 
         String newTitle = "";
@@ -271,10 +251,10 @@ public class ExperimentService {
             System.out.println("  *   Restoring to: " + selected.getVersionID() + "   *");
             System.out.println("  *****************************************");
             System.out.println();
-            System.out.println("  >>> Experiment restored successfully! <<<");
+            Colors.success("Experiment restored successfully!");
             System.out.println();
         } else {
-            System.out.println("  [ERROR] Experiment not found.");
+            Colors.error("Experiment not found.");
         }
     }
 }

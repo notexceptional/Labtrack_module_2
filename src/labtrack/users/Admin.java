@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
+import labtrack.util.Colors;
+import labtrack.util.TablePrinter;
 
 public class Admin extends User {
     private static final String USERS_FILE = "users.csv";
@@ -15,15 +17,13 @@ public class Admin extends User {
 
     @Override
     public void showMenu() {
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|               ADMIN PANEL                    |");
-        System.out.println("+----------------------------------------------+");
+        Colors.header("Admin Panel");
         System.out.println();
-        System.out.println("  ~~~ User Management ~~~");
-        System.out.println("  [1] Create User");
-        System.out.println("  [2] Delete User");
-        System.out.println("  [3] View All Users");
-        System.out.println("  [4] Update User Password");
+        System.out.println(Colors.colorize("  ~~~ User Management ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("1", Colors.YELLOW_BOLD) + "] Create User");
+        System.out.println("  [" + Colors.colorize("2", Colors.YELLOW_BOLD) + "] Delete User");
+        System.out.println("  [" + Colors.colorize("3", Colors.YELLOW_BOLD) + "] View All Users");
+        System.out.println("  [" + Colors.colorize("4", Colors.YELLOW_BOLD) + "] Update User Password");
     }
 
     @Override
@@ -42,7 +42,7 @@ public class Admin extends User {
                 updatePassword();
                 break;
             default:
-                System.out.println("  [ERROR] Invalid choice");
+                Colors.error("Invalid choice");
                 break;
         }
     }
@@ -50,64 +50,48 @@ public class Admin extends User {
     private void createUser() {
         String id = InputHelper.readLine("Enter new user ID (digits only): ");
         if (!id.matches("\\d+")) {
-            System.out.println("  [ERROR] User ID must be digits only.");
+            Colors.error("User ID must be digits only.");
             return;
         }
 
         String newUsername = InputHelper.readLine("Enter username (letters only): ");
         if (!newUsername.matches("[A-Za-z]+")) {
-            System.out.println("  [ERROR] Username must be letters only.");
+            Colors.error("Username must be letters only.");
             return;
         }
 
-        
         List<String> lines = FileManager.readAllLines(USERS_FILE);
         for (String line : lines) {
             String[] p = line.split(",");
             if (p.length < 2) continue;
             if (p[0].equals(id)) {
-                System.out.println("  [ERROR] User ID already exists. User not created.");
+                Colors.error("User ID already exists. User not created.");
                 return;
             }
         }
 
         String newRole = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
         if (!isValidRole(newRole) || newRole.equalsIgnoreCase("admin")) {
-            System.out.println("  [ERROR] Invalid role. User not created.");
+            Colors.error("Invalid role. User not created.");
             return;
         }
 
         String newPassword = InputHelper.readPassword("Enter password: ");
         if (newPassword.length() < 4) {
-            System.out.println("  [ERROR] Password invalid. Must be at least 4 characters.");
+            Colors.error("Password invalid. Must be at least 4 characters.");
             return;
         }
 
         FileManager.write(USERS_FILE, id + "," + newUsername + "," + newRole.toLowerCase() + "," + newPassword);
         System.out.println();
-        System.out.println("  >>> User created successfully! <<<");
+        Colors.success("User created successfully!");
         System.out.println();
     }
 
     private void viewAllUsers() {
-        List<String> lines = FileManager.readAllLines(USERS_FILE);
-        if (lines.isEmpty()) {
-            System.out.println("  [!] No users found.");
-            return;
-        }
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|                ALL USERS                     |");
-        System.out.println("+----------------------------------------------+");
-        for (String line : lines) {
-            String[] p = line.split(",");
-            if (p.length < 3) continue;
-            System.out.println("+------------------------------------------+");
-            System.out.println("| ID:       " + p[0]);
-            System.out.println("| Username: " + p[1]);
-            System.out.println("| Role:     " + p[2]);
-            System.out.println("+------------------------------------------+");
-        }
+        String[] headers = {"ID", "Username", "Role"};
+        TablePrinter.printCsvAsTable("All Users", USERS_FILE, headers);
+        InputHelper.pressEnterToContinue();
     }
 
     private void deleteUser() {
@@ -115,7 +99,7 @@ public class Admin extends User {
 
         List<String> lines = FileManager.readAllLines(USERS_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No users found.");
+            Colors.warning("No users found.");
             return;
         }
 
@@ -131,23 +115,22 @@ public class Admin extends User {
         }
 
         if (!removed) {
-            System.out.println("  [ERROR] User ID not found.");
+            Colors.error("User ID not found.");
             return;
         }
 
         FileManager.overwrite(USERS_FILE, kept);
         System.out.println();
-        System.out.println("  >>> User deleted successfully! <<<");
+        Colors.success("User deleted successfully!");
         System.out.println();
     }
 
     private void updatePassword() {
-        viewAllUsers();
         String targetId = InputHelper.readLine("Enter user ID to update password: ");
 
         List<String> lines = FileManager.readAllLines(USERS_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No users found.");
+            Colors.warning("No users found.");
             return;
         }
 
@@ -159,7 +142,7 @@ public class Admin extends User {
                 found = true;
                 String newPassword = InputHelper.readPassword("Enter new password: ");
                 if (newPassword.length() < 4) {
-                    System.out.println("  [ERROR] Password must be at least 4 characters.");
+                    Colors.error("Password must be at least 4 characters.");
                     return;
                 }
                 lines.set(i, parts[0] + "," + parts[1] + "," + parts[2] + "," + newPassword);
@@ -168,13 +151,13 @@ public class Admin extends User {
         }
 
         if (!found) {
-            System.out.println("  [ERROR] User ID not found.");
+            Colors.error("User ID not found.");
             return;
         }
 
         FileManager.overwrite(USERS_FILE, lines);
         System.out.println();
-        System.out.println("  >>> Password updated successfully! <<<");
+        Colors.success("Password updated successfully!");
         System.out.println();
     }
 

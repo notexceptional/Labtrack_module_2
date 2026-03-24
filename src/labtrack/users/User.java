@@ -23,6 +23,10 @@ public abstract class User {
         System.out.println("Logged out successfully.");
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public abstract void showMenu();
     public void handleChoice(int choice, Scanner sc) {
     }

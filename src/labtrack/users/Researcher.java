@@ -5,6 +5,8 @@ import labtrack.booking.BookingService;
 import labtrack.experiments.ExperimentService;
 import labtrack.inventory.ItemService;
 
+import labtrack.util.Colors;
+
 public class Researcher extends User {
 
     public Researcher(String id, String name) {
@@ -13,28 +15,26 @@ public class Researcher extends User {
 
     @Override
     public void showMenu() {
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|           RESEARCHER DASHBOARD               |");
-        System.out.println("+----------------------------------------------+");
+        Colors.header("Researcher Dashboard");
         System.out.println();
-        System.out.println("  ~~~ Experiments ~~~");
-        System.out.println("  [1] Add Experiment");
-        System.out.println("  [2] View Experiments");
-        System.out.println("  [3] Modify Experiment");
+        System.out.println(Colors.colorize("  ~~~ Experiments ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("1", Colors.YELLOW_BOLD) + "] Add Experiment");
+        System.out.println("  [" + Colors.colorize("2", Colors.YELLOW_BOLD) + "] View Experiments");
+        System.out.println("  [" + Colors.colorize("3", Colors.YELLOW_BOLD) + "] Modify Experiment");
+        System.out.println("  [" + Colors.colorize("20", Colors.YELLOW_BOLD) + "] Delete Experiment");
         System.out.println();
-        System.out.println("  ~~~ Version Control ~~~");
-        System.out.println("  [6] View Version History");
-        System.out.println("  [7] Restore Version");
+        System.out.println(Colors.colorize("  ~~~ Version Control ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("6", Colors.YELLOW_BOLD) + "] View Version History");
+        System.out.println("  [" + Colors.colorize("7", Colors.YELLOW_BOLD) + "] Restore Version");
         System.out.println();
-        System.out.println("  ~~~ Items ~~~");
-        System.out.println("  [10] View Available Items");
-        System.out.println("  [11] Borrow Item");
-        System.out.println("  [12] Request New Item");
+        System.out.println(Colors.colorize("  ~~~ Items ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("10", Colors.YELLOW_BOLD) + "] View Available Items");
+        System.out.println("  [" + Colors.colorize("11", Colors.YELLOW_BOLD) + "] Borrow Item");
+        System.out.println("  [" + Colors.colorize("12", Colors.YELLOW_BOLD) + "] Request New Item");
         System.out.println();
-        System.out.println("  ~~~ Reservations ~~~");
-        System.out.println("  [20] Delete Experiment");
-        System.out.println("  [21] Make Reservation");
-        System.out.println("  [22] View Booked Rooms");
+        System.out.println(Colors.colorize("  ~~~ Reservations ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("21", Colors.YELLOW_BOLD) + "] Make Reservation");
+        System.out.println("  [" + Colors.colorize("22", Colors.YELLOW_BOLD) + "] View Booked Rooms");
     }
 
     @Override

@@ -9,6 +9,7 @@ import labtrack.users.Technician;
 import labtrack.users.User;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
+import labtrack.util.Colors;
 
 public class AuthService {
     private static final String PASSWORD = "123456";
@@ -21,29 +22,17 @@ public class AuthService {
         List<String> users = FileManager.readAllLines("users.csv");
         boolean firstRun = users.isEmpty();
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|                    LOGIN                     |");
-        System.out.println("+----------------------------------------------+");
-
         if (firstRun) {
             String role = InputHelper.readLine("Enter role (admin only): ");
             if (!role.equalsIgnoreCase("admin")) {
-                System.out.println();
-                System.out.println("  [ERROR] Only admin can login.");
-                System.out.println();
+                Colors.error("Only admin can login.");
                 return null;
             }
             String pass = InputHelper.readPassword("Enter password: ");
             if (!pass.equals(PASSWORD)) {
-                System.out.println();
-                System.out.println("  [ERROR] Wrong password! Access denied.");
-                System.out.println();
+                Colors.error("Wrong password! Access denied.");
                 return null;
             }
-            System.out.println();
-            System.out.println("  >>> Welcome, Admin! <<<");
-            System.out.println();
             return new Admin("A1", "Admin");
         }
 
@@ -53,14 +42,9 @@ public class AuthService {
 
         if (role.equalsIgnoreCase("admin")) {
             if (!pass.equals(PASSWORD)) {
-                System.out.println();
-                System.out.println("  [ERROR] Wrong password! Access denied.");
-                System.out.println();
+                Colors.error("Wrong password! Access denied.");
                 return null;
             }
-            System.out.println();
-            System.out.println("  >>> Welcome, " + username + "! <<<");
-            System.out.println();
             return new Admin("A1", username);
         }
 
@@ -72,9 +56,6 @@ public class AuthService {
             String userRole = parts[2];
             String userPass = parts[3];
             if (user.equalsIgnoreCase(username) && userRole.equalsIgnoreCase(role) && userPass.equals(pass)) {
-                System.out.println();
-                System.out.println("  >>> Welcome, " + user + "! <<<");
-                System.out.println();
                 String normalizedRole = userRole.toLowerCase();
                 if (normalizedRole.equals("researcher")) {
                     return new Researcher(id, user);
@@ -87,9 +68,7 @@ public class AuthService {
                 }
             }
         }
-        System.out.println();
-        System.out.println("  [ERROR] User not found or credentials incorrect.");
-        System.out.println();
+        Colors.error("User not found or credentials incorrect.");
         return null;
     }
 }

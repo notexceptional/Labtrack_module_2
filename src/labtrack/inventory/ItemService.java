@@ -1,9 +1,12 @@
 package labtrack.inventory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
+import labtrack.util.Colors;
+import labtrack.util.TablePrinter;
 
 public class ItemService {
     private static final String INVENTORY_FILE = "inventory.csv";
@@ -15,45 +18,33 @@ public class ItemService {
         List<String> lines = FileManager.readAllLines(INVENTORY_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No inventory items found.");
+            Colors.warning("No inventory items found.");
             return;
         }
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|              AVAILABLE ITEMS                 |");
-        System.out.println("+----------------------------------------------+");
-        boolean any = false;
+        List<String[]> rows = new ArrayList<>();
         for (String line : lines) {
             InventoryItem item = InventoryItem.fromString(line);
-            if (item == null) {
-                continue;
-            }
+            if (item == null) continue;
 
-            String status;
-            if (item.getQuantity() > 0) {
-                status = "In Stock (" + item.getQuantity() + ")";
-            } else {
-                status = "Out of Stock";
-            }
+            String status = (item.getQuantity() > 0) 
+                ? Colors.colorize("In Stock (" + item.getQuantity() + ")", Colors.GREEN) 
+                : Colors.colorize("Out of Stock", Colors.RED_BOLD);
 
-            String tag = "";
-            if (item.getType().equals("necessary")) {
-                tag = " [NECESSARY]";
-            }
-            System.out.println("  " + item.getName() + tag + " : " + status);
-            any = true;
+            String tag = item.getType().equals("necessary") ? Colors.colorize("[NECESSARY]", Colors.PURPLE_BOLD) : "";
+            rows.add(new String[]{item.getName() + " " + tag, status});
         }
-        if (!any) {
-            System.out.println("  [!] No items available.");
-        }
+
+        String[] headers = {"Item Name", "Status"};
+        TablePrinter.printTable("Available Items", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 
     public void borrowItem(Scanner sc, String borrowerName) {
         List<String> lines = FileManager.readAllLines(INVENTORY_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No inventory items found.");
+            Colors.warning("No inventory items found.");
             return;
         }
 
@@ -63,12 +54,12 @@ public class ItemService {
         try {
             borrowQty = Integer.parseInt(InputHelper.readLine("Enter quantity to borrow: "));
         } catch (NumberFormatException e) {
-            System.out.println("  [ERROR] Invalid quantity.");
+            Colors.error("Invalid quantity.");
             return;
         }
 
         if (borrowQty <= 0) {
-            System.out.println("  [ERROR] Quantity must be greater than 0.");
+            Colors.error("Quantity must be greater than 0.");
             return;
         }
 
@@ -78,11 +69,11 @@ public class ItemService {
             if (item != null && item.getName().equalsIgnoreCase(itemName)) {
                 found = true;
                 if (item.getQuantity() == 0) {
-                    System.out.println("  [ERROR] Item is out of stock.");
+                    Colors.error("Item is out of stock.");
                     return;
                 }
                 if (item.getQuantity() < borrowQty) {
-                    System.out.println("  [ERROR] Not enough stock. Available: " + item.getQuantity());
+                    Colors.error("Not enough stock. Available: " + item.getQuantity());
                     return;
                 }
                 break;
@@ -90,14 +81,14 @@ public class ItemService {
         }
 
         if (!found) {
-            System.out.println("  [ERROR] Item not found in inventory.");
+            Colors.error("Item not found in inventory.");
             return;
         }
 
         String borrowRequest = borrowerName + "|" + itemName + "|" + borrowQty + "|pending|" + System.currentTimeMillis();
         FileManager.write(BORROW_REQUESTS_FILE, borrowRequest);
         System.out.println();
-        System.out.println("  >>> Borrow request submitted. Waiting for technician approval. <<<");
+        Colors.success("Borrow request submitted. Waiting for technician approval.");
         System.out.println();
     }
 
@@ -105,36 +96,25 @@ public class ItemService {
         List<String> lines = FileManager.readAllLines(BORROW_REQUESTS_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No borrow requests found.");
+            Colors.warning("No borrow requests found.");
             return;
         }
 
-        boolean hasPending = hasPendingBorrowRequests(lines);
-        if (!hasPending) {
-            System.out.println("  [!] No borrow requests found.");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|              BORROW REQUESTS                 |");
-        System.out.println("+----------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
         for (String line : lines) {
             String[] parts = line.split("\\|", 5);
-            if (parts.length < 4) {
-                continue;
-            }
+            if (parts.length < 4 || !parts[3].equals("pending")) continue;
 
-            String status = parts[3];
-            if (!status.equals("pending")) {
-                continue;
-            }
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Requester:  " + parts[0]);
-            System.out.println("| Item:       " + parts[1] + " (Qty: " + parts[2] + ")");
-            System.out.println("| Status:     " + parts[3]);
-            System.out.println("+------------------------------------------+");
+            rows.add(new String[]{parts[0], parts[1], parts[2], Colors.colorize(parts[3], Colors.YELLOW_BOLD)});
         }
+
+        if (rows.isEmpty()) {
+            Colors.warning("No pending borrow requests found.");
+            return;
+        }
+
+        String[] headers = {"Requester", "Item", "Qty", "Status"};
+        TablePrinter.printTable("Pending Borrow Requests", headers, rows);
     }
 
     private boolean hasPendingBorrowRequests(List<String> lines) {
@@ -154,13 +134,13 @@ public class ItemService {
         List<String> lines = FileManager.readAllLines(BORROW_REQUESTS_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No borrow requests found.");
+            Colors.warning("No borrow requests found.");
             return;
         }
 
         boolean hasPending = hasPendingBorrowRequests(lines);
         if (!hasPending) {
-            System.out.println("  [!] No borrow requests found.");
+            Colors.warning("No borrow requests found.");
             return;
         }
 
@@ -193,7 +173,7 @@ public class ItemService {
         }
 
         if (!found) {
-            System.out.println("  [ERROR] Pending request not found.");
+            Colors.error("Pending request not found.");
             return;
         }
 
@@ -202,7 +182,7 @@ public class ItemService {
             InventoryItem item = InventoryItem.fromString(invLines.get(i));
             if (item != null && item.getName().equalsIgnoreCase(itemName)) {
                 if (item.getQuantity() < approvedQty) {
-                    System.out.println("  [ERROR] Not enough stock to approve. Available: " + item.getQuantity());
+                    Colors.error("Not enough stock to approve. Available: " + item.getQuantity());
                     return;
                 }
                 int newQuantity = item.getQuantity() - approvedQty;
@@ -214,7 +194,7 @@ public class ItemService {
 
         String returnDate = InputHelper.readLine("Enter return date (yyyy-MM-dd): ");
         if (returnDate.isEmpty()) {
-            System.out.println("  [ERROR] Return date cannot be empty.");
+            Colors.error("Return date cannot be empty.");
             return;
         }
 
@@ -225,7 +205,7 @@ public class ItemService {
         FileManager.write(BORROWED_ITEMS_FILE, borrowRecord);
 
         System.out.println();
-        System.out.println("  >>> Borrow request approved! Return date: " + returnDate + " <<<");
+        Colors.success("Borrow request approved! Return date: " + returnDate);
         System.out.println();
     }
 
@@ -233,30 +213,27 @@ public class ItemService {
         List<String> lines = FileManager.readAllLines(BORROWED_ITEMS_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No borrowed items found.");
+            Colors.warning("No borrowed items found.");
             return;
         }
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|              BORROWED ITEMS                  |");
-        System.out.println("+----------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
         for (String line : lines) {
             String[] parts = line.split("\\|", 5);
             if (parts.length < 4) continue;
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Borrower:    " + parts[0]);
-            System.out.println("| Item:        " + parts[1] + " (Qty: " + parts[2] + ")");
-            System.out.println("| Return Date: " + parts[3]);
-            System.out.println("+------------------------------------------+");
+            rows.add(new String[]{parts[0], parts[1], parts[2], parts[3]});
         }
+
+        String[] headers = {"Borrower", "Item", "Qty", "Return Date"};
+        TablePrinter.printTable("Currently Borrowed Items", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 
     public void requestNewItem(Scanner sc, String requesterName) {
         String itemName = InputHelper.readLine("Enter item name to request: ");
 
         if (itemName.isEmpty()) {
-            System.out.println("  [ERROR] Item name cannot be empty.");
+            Colors.error("Item name cannot be empty.");
             return;
         }
 
@@ -264,7 +241,7 @@ public class ItemService {
         for (String line : invLines) {
             InventoryItem item = InventoryItem.fromString(line);
             if (item != null && item.getName().equalsIgnoreCase(itemName)) {
-                System.out.println("  [!] Item already exists in inventory. Use borrow instead.");
+                Colors.warning("Item already exists in inventory. Use borrow instead.");
                 return;
             }
         }
@@ -273,7 +250,7 @@ public class ItemService {
         try {
             qty = Integer.parseInt(InputHelper.readLine("Enter quantity needed: "));
         } catch (NumberFormatException e) {
-            System.out.println("  [ERROR] Invalid quantity.");
+            Colors.error("Invalid quantity.");
             return;
         }
 
@@ -282,7 +259,7 @@ public class ItemService {
         String request = requesterName + "|" + itemName + "|" + qty + "|" + reason + "|pending|" + System.currentTimeMillis();
         FileManager.write(REQUESTS_FILE, request);
         System.out.println();
-        System.out.println("  >>> Item request submitted successfully! <<<");
+        Colors.success("Item request submitted successfully!");
         System.out.println();
     }
 
@@ -290,31 +267,29 @@ public class ItemService {
         List<String> lines = FileManager.readAllLines(REQUESTS_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No item requests found.");
+            Colors.warning("No item requests found.");
             return;
         }
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|               ITEM REQUESTS                  |");
-        System.out.println("+----------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
         for (String line : lines) {
             String[] parts = line.split("\\|", 6);
             if (parts.length < 5) continue;
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Requester:  " + parts[0]);
-            System.out.println("| Item:       " + parts[1] + " (Qty: " + parts[2] + ")");
-            System.out.println("| Reason:     " + parts[3]);
-            System.out.println("| Status:     " + parts[4]);
-            System.out.println("+------------------------------------------+");
+            
+            String status = parts[4].equals("pending") ? Colors.colorize(parts[4], Colors.YELLOW_BOLD) : Colors.colorize(parts[4], Colors.GREEN);
+            rows.add(new String[]{parts[0], parts[1], parts[2], parts[3], status});
         }
+
+        String[] headers = {"Requester", "Item", "Qty", "Reason", "Status"};
+        TablePrinter.printTable("All Item Requests", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 
     public void approveRequest(Scanner sc) {
         List<String> lines = FileManager.readAllLines(REQUESTS_FILE);
 
         if (lines.isEmpty()) {
-            System.out.println("  [!] No item requests found.");
+            Colors.warning("No item requests found.");
             return;
         }
 
@@ -341,13 +316,13 @@ public class ItemService {
         }
 
         if (!found) {
-            System.out.println("  [ERROR] Pending request not found for this item.");
+            Colors.error("Pending request not found for this item.");
             return;
         }
 
         FileManager.overwrite(REQUESTS_FILE, lines);
         System.out.println();
-        System.out.println("  >>> Request approved! <<<");
+        Colors.success("Request approved!");
         System.out.println();
     }
 }

@@ -6,6 +6,8 @@ import java.util.Scanner;
 import labtrack.labroom.LabRoom;
 import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
+import labtrack.util.Colors;
+import labtrack.util.TablePrinter;
 
 public class BookingService {
     private static final String PENDING_FILE = "bookings_pending.csv";
@@ -15,34 +17,32 @@ public class BookingService {
     public void listPending() {
         List<String> lines = FileManager.readAllLines(PENDING_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No pending reservations.");
+            Colors.warning("No pending reservations.");
             return;
         }
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|           PENDING RESERVATIONS               |");
-        System.out.println("+----------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
         for (String line : lines) {
             Booking booking = Booking.fromString(line);
-            if (booking == null) {
-                continue;
-            }
+            if (booking == null) continue;
 
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Booking ID:  " + booking.getBookingID());
-            System.out.println("| Room:        " + booking.getRoomID());
-            System.out.println("| Date:        " + booking.getDateString());
-            System.out.println("| Time:        " + booking.getStartTimeString() + " - " + booking.getEndTimeString());
-            System.out.println("| Booked By:   " + booking.getBookedBy());
-            System.out.println("+------------------------------------------+");
+            rows.add(new String[]{
+                booking.getBookingID(),
+                booking.getRoomID(),
+                booking.getDateString(),
+                booking.getStartTimeString() + " - " + booking.getEndTimeString(),
+                booking.getBookedBy()
+            });
         }
+
+        String[] headers = {"ID", "Room", "Date", "Duration", "Booked By"};
+        TablePrinter.printTable("Pending Reservations", headers, rows);
     }
 
     public void approveById(Scanner sc) {
         List<String> lines = FileManager.readAllLines(PENDING_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No pending reservations.");
+            Colors.warning("No pending reservations.");
             return;
         }
 
@@ -54,7 +54,7 @@ public class BookingService {
 
         String targetId = InputHelper.readLine("Enter Booking ID to approve: ");
         if (targetId.isEmpty()) {
-            System.out.println("  [ERROR] Invalid booking ID.");
+            Colors.error("Invalid booking ID.");
             return;
         }
 
@@ -79,7 +79,7 @@ public class BookingService {
         }
 
         if (approvedLine == null) {
-            System.out.println("  [ERROR] Booking ID not found in pending list.");
+            Colors.error("Booking ID not found in pending list.");
             return;
         }
 
@@ -96,12 +96,10 @@ public class BookingService {
             );
             FileManager.write(LAB_ROOMS_FILE, labRoom.toString());
             System.out.println();
-            System.out.println("  *****************************************");
-            System.out.println("  *   Lab Room " + approved.getRoomID() + " is RESERVED!   *");
-            System.out.println("  *****************************************");
+            Colors.success("Lab Room " + approved.getRoomID() + " is RESERVED!");
         }
         System.out.println();
-        System.out.println("  >>> Reservation approved successfully! <<<");
+        Colors.success("Reservation approved successfully!");
         System.out.println();
     }
 
@@ -136,33 +134,32 @@ public class BookingService {
         Booking booking = new Booking(bookingID, date, startTime, endTime, roomID, username);
         FileManager.write(PENDING_FILE, booking.toString());
         System.out.println();
-        System.out.println("  >>> Reservation submitted for approval! <<<");
+        Colors.success("Reservation submitted for approval!");
         System.out.println();
     }
 
     public void viewBookedRooms() {
         List<String> lines = FileManager.readAllLines(LAB_ROOMS_FILE);
         if (lines.isEmpty()) {
-            System.out.println("  [!] No booked rooms.");
+            Colors.warning("No booked rooms.");
             return;
         }
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|             BOOKED LAB ROOMS                 |");
-        System.out.println("+----------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
         for (String line : lines) {
             LabRoom room = LabRoom.fromString(line);
-            if (room == null) {
-                continue;
-            }
+            if (room == null) continue;
 
-            System.out.println("+------------------------------------------+");
-            System.out.println("| Room ID:     " + room.getRoomID());
-            System.out.println("| Booking ID:  " + room.getBookingID());
-            System.out.println("| Booked By:   " + room.getBookedBy());
-            System.out.println("| Date:        " + room.getDateBooked());
-            System.out.println("+------------------------------------------+");
+            rows.add(new String[]{
+                room.getRoomID(),
+                room.getBookingID(),
+                room.getBookedBy(),
+                room.getDateBooked()
+            });
         }
+
+        String[] headers = {"Room ID", "Booking ID", "Booked By", "Date"};
+        TablePrinter.printTable("Booked Lab Rooms", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 }

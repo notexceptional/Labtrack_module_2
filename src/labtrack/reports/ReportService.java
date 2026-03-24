@@ -1,7 +1,10 @@
 package labtrack.reports;
 
+import java.util.ArrayList;
 import java.util.List;
 import labtrack.util.FileManager;
+import labtrack.util.TablePrinter;
+import labtrack.util.InputHelper;
 
 public class ReportService {
     private static final String EXPERIMENTS_FILE = "experiments.csv";
@@ -15,21 +18,19 @@ public class ReportService {
         int pendingBookings = countLines(PENDING_BOOKINGS_FILE);
         int approvedBookings = countLines(APPROVED_BOOKINGS_FILE);
 
-        System.out.println();
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|              SYSTEM REPORT                   |");
-        System.out.println("+----------------------------------------------+");
-        System.out.println("+------------------------------------------+");
-        System.out.println("| Experiments Saved:    " + experiments);
-        System.out.println("| Inventory Items:      " + inventoryItems);
-        System.out.println("| Bookings Pending:     " + pendingBookings);
-        System.out.println("| Bookings Approved:    " + approvedBookings);
-        System.out.println("+------------------------------------------+");
+        List<String[]> rows = new ArrayList<>();
+        rows.add(new String[]{"Experiments Saved", String.valueOf(experiments)});
+        rows.add(new String[]{"Inventory Items", String.valueOf(inventoryItems)});
+        rows.add(new String[]{"Bookings Pending", String.valueOf(pendingBookings)});
+        rows.add(new String[]{"Bookings Approved", String.valueOf(approvedBookings)});
+
+        String[] headers = {"Metric", "Count"};
+        TablePrinter.printTable("System Summary Report", headers, rows);
+        InputHelper.pressEnterToContinue();
     }
 
     private int countLines(String file) {
         List<String> lines = FileManager.readAllLines(file);
-        int count = lines.size();
-        return count;
+        return lines.size();
     }
 }

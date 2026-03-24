@@ -5,6 +5,8 @@ import labtrack.booking.BookingService;
 import labtrack.inventory.ItemService;
 import labtrack.reports.ReportService;
 
+import labtrack.util.Colors;
+
 public class LabManager extends User {
     public LabManager(String id, String name) {
         super(id, name, "LabManager");
@@ -12,19 +14,17 @@ public class LabManager extends User {
 
     @Override
     public void showMenu() {
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|            LAB MANAGER PANEL                 |");
-        System.out.println("+----------------------------------------------+");
+        Colors.header("Lab Manager Panel");
         System.out.println();
-        System.out.println("  ~~~ Reservations ~~~");
-        System.out.println("  [1] Approve Reservation");
+        System.out.println(Colors.colorize("  ~~~ Reservations ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("1", Colors.YELLOW_BOLD) + "] Approve Reservation");
         System.out.println();
-        System.out.println("  ~~~ Reports ~~~");
-        System.out.println("  [2] Generate Report");
+        System.out.println(Colors.colorize("  ~~~ Reports ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("2", Colors.YELLOW_BOLD) + "] Generate Report");
         System.out.println();
-        System.out.println("  ~~~ Item Requests ~~~");
-        System.out.println("  [3] View Item Requests");
-        System.out.println("  [4] Approve Item Request");
+        System.out.println(Colors.colorize("  ~~~ Item Requests ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("3", Colors.YELLOW_BOLD) + "] View Item Requests");
+        System.out.println("  [" + Colors.colorize("4", Colors.YELLOW_BOLD) + "] Approve Item Request");
     }
 
     @Override

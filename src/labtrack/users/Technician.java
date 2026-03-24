@@ -4,6 +4,8 @@ import java.util.Scanner;
 import labtrack.inventory.InventoryService;
 import labtrack.inventory.ItemService;
 
+import labtrack.util.Colors;
+
 public class Technician extends User {
     public Technician(String id, String name) {
         super(id, name, "Technician");
@@ -11,21 +13,19 @@ public class Technician extends User {
 
     @Override
     public void showMenu() {
-        System.out.println("+----------------------------------------------+");
-        System.out.println("|           TECHNICIAN DASHBOARD               |");
-        System.out.println("+----------------------------------------------+");
+        Colors.header("Technician Dashboard");
         System.out.println();
-        System.out.println("  ~~~ Inventory ~~~");
-        System.out.println("  [1] Add Inventory Item");
-        System.out.println("  [2] Update Item Quantity");
-        System.out.println("  [3] Mark Item Out of Stock");
-        System.out.println("  [4] View Out-of-Stock Items");
-        System.out.println("  [5] View Inventory");
+        System.out.println(Colors.colorize("  ~~~ Inventory ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("1", Colors.YELLOW_BOLD) + "] Add Inventory Item");
+        System.out.println("  [" + Colors.colorize("2", Colors.YELLOW_BOLD) + "] Update Item Quantity");
+        System.out.println("  [" + Colors.colorize("3", Colors.YELLOW_BOLD) + "] Mark Item Out of Stock");
+        System.out.println("  [" + Colors.colorize("4", Colors.YELLOW_BOLD) + "] View Out-of-Stock Items");
+        System.out.println("  [" + Colors.colorize("5", Colors.YELLOW_BOLD) + "] View Inventory");
         System.out.println();
-        System.out.println("  ~~~ Borrow Requests ~~~");
-        System.out.println("  [6] View Borrow Requests");
-        System.out.println("  [7] Approve Borrow Request");
-        System.out.println("  [8] View Borrowed Items");
+        System.out.println(Colors.colorize("  ~~~ Borrow Requests ~~~", Colors.CYAN_BOLD));
+        System.out.println("  [" + Colors.colorize("6", Colors.YELLOW_BOLD) + "] View Borrow Requests");
+        System.out.println("  [" + Colors.colorize("7", Colors.YELLOW_BOLD) + "] Approve Borrow Request");
+        System.out.println("  [" + Colors.colorize("8", Colors.YELLOW_BOLD) + "] View Borrowed Items");
     }
 
     @Override
