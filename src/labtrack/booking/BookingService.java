@@ -9,6 +9,11 @@ import labtrack.util.InputHelper;
 import labtrack.util.Colors;
 import labtrack.util.TablePrinter;
 
+/**
+ * Service class for managing laboratory room reservations.
+ * This class handles booking requests, pending approval queues, 
+ * and finalized reservation records.
+ */
 public class BookingService {
     private static final String PENDING_FILE = "bookings_pending.csv";
     private static final String APPROVED_FILE = "bookings_approved.csv";
@@ -113,6 +118,9 @@ public class BookingService {
         return lines.size();
     }
 
+    /**
+     * Researchers use this to submit a new room reservation request for approval.
+     */
     public void makeReservation(Scanner sc, String username) {
         String bookingID = InputHelper.readLine("Enter Booking ID(use last 3 digits from your userID): ");
         String date = InputHelper.readLine("Enter Date (yyyy-MM-dd): ");
