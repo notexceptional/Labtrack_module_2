@@ -9,6 +9,11 @@ import labtrack.util.Colors;
 import labtrack.util.TablePrinter;
 import labtrack.version.VersionControl;
 
+/**
+ * Service class for managing laboratory experiments.
+ * This class handles experiment CRUD operations and integrates with 
+ * a custom Version Control system for tracking research history.
+ */
 public class ExperimentService {
     private static final String VERSIONS_FILE = "experiment_versions.csv";
 
@@ -169,6 +174,10 @@ public class ExperimentService {
         return versions;
     }
 
+    /**
+     * Views the full version history for a specific experiment
+     * and allows the user to restore a previous state.
+     */
     public void viewVersionHistory(Scanner sc) {
         String expId = InputHelper.readLine("Enter Experiment ID to view history: ");
 
@@ -222,8 +231,9 @@ public class ExperimentService {
 
         String newTitle = "";
         String newDesc = "";
-        String[] snapshotLines = snapshot.split("\n");
-        for (String snapshotLine : snapshotLines) {
+        // Reconstructs the experiment object from a historical snapshot
+        String[] snapParts = snapshot.split("\n");
+        for (String snapshotLine : snapParts) {
             if (snapshotLine.startsWith("title: ")) {
                 newTitle = snapshotLine.substring(7);
             } else if (snapshotLine.startsWith("description: ")) {
