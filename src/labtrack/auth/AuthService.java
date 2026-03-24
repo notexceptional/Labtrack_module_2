@@ -11,6 +11,10 @@ import labtrack.util.FileManager;
 import labtrack.util.InputHelper;
 import labtrack.util.Colors;
 
+/**
+ * Handles user authentication and role-based login for the system.
+ * This class validates credentials against CSV data and manages initial admin setup.
+ */
 public class AuthService {
     private static final String PASSWORD = "123456";
 
@@ -22,6 +26,7 @@ public class AuthService {
         List<String> users = FileManager.readAllLines("users.csv");
         boolean firstRun = users.isEmpty();
 
+        // Initial setup for first-time use: handles mandatory Admin creation
         if (firstRun) {
             String role = InputHelper.readLine("Enter role (admin only): ");
             if (!role.equalsIgnoreCase("admin")) {
@@ -40,6 +45,7 @@ public class AuthService {
         String role = InputHelper.readLine("Enter role: ");
         String pass = InputHelper.readPassword("Enter password: ");
 
+        // Special handling for the main Admin role (static credentials)
         if (role.equalsIgnoreCase("admin")) {
             if (!pass.equals(PASSWORD)) {
                 Colors.error("Wrong password! Access denied.");
@@ -48,6 +54,7 @@ public class AuthService {
             return new Admin("A1", username);
         }
 
+        // Standard user lookup: iterates through registered users
         for (String line : users) {
             String[] parts = line.split(",");
             if (parts.length < 4) continue;
