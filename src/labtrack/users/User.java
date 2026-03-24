@@ -2,6 +2,10 @@ package labtrack.users;
 
 import java.util.Scanner;
 
+/**
+ * Abstract base class for all user roles in the LABTRACK system.
+ * Defines the core structure for dashboards and command handling.
+ */
 public abstract class User {
     protected String userID;
     protected String username;
@@ -27,7 +31,13 @@ public abstract class User {
         return username;
     }
 
+    /**
+     * Displays the role-specific command menu.
+     */
     public abstract void showMenu();
-    public void handleChoice(int choice, Scanner sc) {
-    }
+
+    /**
+     * Handles the user's menu selection.
+     */
+    public abstract void handleChoice(int choice, Scanner sc);
 }
