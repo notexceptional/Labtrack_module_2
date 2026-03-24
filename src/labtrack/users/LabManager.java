@@ -7,7 +7,17 @@ import labtrack.reports.ReportService;
 
 import labtrack.util.Colors;
 
+/**
+ * Represents a Laboratory Manager.
+ * Managers oversee high-level operations, approve specialized item requests,
+ * generate system reports, and manage facility reservations.
+ */
 public class LabManager extends User {
+    /**
+     * Constructs a new LabManager user.
+     * @param id The unique identifier for the lab manager.
+     * @param name The name of the lab manager.
+     */
     public LabManager(String id, String name) {
         super(id, name, "LabManager");
     }
