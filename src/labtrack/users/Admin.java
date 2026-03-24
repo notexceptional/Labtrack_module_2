@@ -8,6 +8,11 @@ import labtrack.util.InputHelper;
 import labtrack.util.Colors;
 import labtrack.util.TablePrinter;
 
+/**
+ * Represents the System Administrator.
+ * Admins have full control over user management, including creating,
+ * deleting, and updating passwords for all roles in the system.
+ */
 public class Admin extends User {
     private static final String USERS_FILE = "users.csv";
 
