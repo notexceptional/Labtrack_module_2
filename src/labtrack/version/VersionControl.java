@@ -3,6 +3,10 @@ package labtrack.version;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Model class representing a historical version of a laboratory experiment or data record.
+ * Stores a snapshot of the data, the modifier, and a change log entry.
+ */
 public class VersionControl {
     private String versionID;
     private String dataSnapshot;
