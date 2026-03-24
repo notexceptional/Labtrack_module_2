@@ -1,11 +1,22 @@
 package labtrack.inventory;
 
-
+/**
+ * Model class representing an item in the laboratory inventory.
+ * Stores item details and provides CSV serialization/deserialization logic.
+ */
 public class InventoryItem {
     private String name;
     private int quantity;
     private String type;
 
+    /**
+     * Constructs a new InventoryItem with the specified name, quantity, and type.
+     * If the type is null, it defaults to "other".
+     *
+     * @param name The name of the inventory item.
+     * @param qty The quantity of the inventory item.
+     * @param type The type of the inventory item (e.g., "chemical", "glassware").
+     */
     public InventoryItem(String name, int qty, String type) {
         this.name = name;
         this.quantity = qty;
