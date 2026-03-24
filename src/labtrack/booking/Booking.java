@@ -4,6 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
+/**
+ * Model class representing a room reservation.
+ * Stores booking details including ID, user, item, and date.
+ */
 public class Booking {
     private String bookingID;
     private String date;
