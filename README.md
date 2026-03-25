@@ -1,227 +1,111 @@
-# LabTrack 🔬
+# LABTRACK: Research Laboratory Management System 🔬
 
-**A comprehensive Research Laboratory Management System built with Java**
+**A robust, role-based terminal application engineered in Java for efficient laboratory operations.**
 
-![Static Badge](https://img.shields.io/badge/language-Java-orange?style=for-the-badge&logo=openjdk&logoColor=white)
-![Static Badge](https://img.shields.io/badge/IDE-VS%20Code-blue?style=for-the-badge&logo=visual%20studio%20code&logoColor=white)
-![Static Badge](https://img.shields.io/badge/IDE-IntelliJ%20IDEA-purple?style=for-the-badge&logo=intellij%20idea&logoColor=white)
-![Version](https://img.shields.io/badge/Version-1.0-blue?style=for-the-badge&color=blue)
-![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
-![Mac](https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white)
-![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+[![Language](https://img.shields.io/badge/language-Java-orange?style=for-the-badge&logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
+[![Version](https://img.shields.io/badge/Version-1.1-blue?style=for-the-badge&color=blue)](https://github.com/)
+[![License](https://img.shields.io/badge/License-Academic-green?style=for-the-badge)](LICENSE)
 
 ---
 
-![LabTrack](images/Gemini_Generated_Image_t33l3ut33l3ut33l.png)
+## 📝 Project Overview
 
-LabTrack is a role-based research laboratory management system designed to streamline lab operations including user management, inventory tracking, experiment documentation, lab room reservations, and equipment borrowing. The system supports multiple user roles with tailored functionalities for each.
+**LABTRACK** is a comprehensive Research Laboratory Management System (RLMS) designed to digitize and streamline the daily operations of a modern research facility. Built with a focus on **Object-Oriented Programming (OOP)** principles, the system provides a secure, role-based environment for managing researchers, inventory, experiments, and facility resources.
 
----
-
-## Features
-
-### User Management (Admin)
-- Create, delete, and view users
-- Update user passwords
-- Role-based access control (Researcher, Technician, Lab Manager)
-
-### Experiment Management (Researcher)
-- Add, view, modify, and delete experiments
-- **Version Control**: Track experiment history with snapshots
-- Restore previous versions of experiments
-- View detailed change logs with diff comparisons
-
-### Inventory Management (Technician)
-- Add inventory items (categorized as "necessary" or "other")
-- Update item quantities
-- Mark items as out of stock
-- View complete inventory and out-of-stock items
-- Process borrow requests from researchers
-
-### Lab Room Reservations
-- **Researchers**: Request lab room reservations
-- **Lab Managers**: Approve/reject reservation requests
-- View all booked rooms and pending reservations
-
-### Item Borrowing System
-- Researchers can request to borrow items
-- Technicians review and approve borrow requests
-- Track currently borrowed items
-
-### Reports (Lab Manager)
-- Generate system summary reports
-- View statistics on experiments, inventory, and bookings
-- Manage item requests
+### Core Objectives
+- **Centralized Management**: Unified platform for equipment, personnel, and data tracking.
+- **Data Integrity**: Integrated Version Control System (VCS) for research experiments.
+- **Optimized Workflow**: Automated approval queues for borrowing and reservations.
+- **Professional UX**: A high-fidelity, colored ANSI terminal interface with structured tabular data presentation.
 
 ---
 
-## Project Structure
+## 🏗️ Technical Architecture
 
-```
-Labtrack/
-├── src/labtrack/
-│   ├── auth/           # Authentication services
-│   ├── booking/        # Lab room reservation system
-│   ├── experiments/    # Experiment management & version control
-│   ├── inventory/      # Inventory & item services
-│   ├── labroom/        # Lab room data models
-│   ├── main/           # Application entry point
-│   ├── protocol/       # Protocol definitions
-│   ├── reports/        # Reporting services
-│   ├── sample/         # Sample data models
-│   ├── users/          # User roles (Admin, Researcher, Technician, LabManager)
-│   ├── util/           # File management & input helpers
-│   └── version/        # Version control system
-├── bin/                # Compiled output
-├── lib/                # Dependencies
-└── *.csv               # Data storage files
-```
+The system is built on a modular architecture that emphasizes scalability and maintainability.
+
+### 🧩 OOP Principles in Action
+- **Inheritance**: A hierarchical `User` model defines the base identity, which is extended by specialized roles: `Admin`, `Researcher`, `Technician`, and `LabManager`.
+- **Polymorphism**: The application utilizes dynamic method dispatch to render role-specific dashboards and handle commands through a unified interface.
+- **Encapsulation**: Strict data hiding in model classes (`Experiment`, `InventoryItem`, `Booking`) ensures that state transitions are managed exclusively through validated service layers.
+- **Abstraction**: Utility classes like `TablePrinter` and `Colors` abstract complex terminal rendering logic from the business services.
+
+### 💾 Persistence & Infrastructure
+- **CSV Data Layer**: High-performance, lightweight persistence using flat-file CSV storage with custom serialization logic.
+- **Custom VCS**: A specialized Version Control System for experiments that captures multi-property snapshots and supports state restoration.
 
 ---
 
-## Prerequisites
+## 🚀 Getting Started
 
-- **Java JDK 17** or higher
-- **VS Code** with Java Extension Pack (recommended) or **IntelliJ IDEA 2025.3.1** or any Java IDE
+### Prerequisites
+- **Java Development Kit (JDK) 17** or higher.
+- A terminal emulator supporting **ANSI escape codes** (Windows Terminal, iTerm2, VS Code Integrated Terminal).
 
----
-
-## Installation & Running
-
-### Using VS Code
-1. Open the project folder in VS Code
-2. Ensure the Java Extension Pack is installed
-3. Run `Main.java` from `src/labtrack/main/`
-
-### Using Command Line
+### Installation & Execution
 ```bash
-# Navigate to project directory
+# 1. Clone or extract the project
+# 2. Navigate to the project directory
 cd Labtrack
 
-# Compile
+# 3. Compile the source code
 javac -d bin src/labtrack/**/*.java
 
-# Run
+# 4. Launch the application
 java -cp bin labtrack.main.Main
 ```
 
 ---
 
-## User Roles & Permissions
+## 👥 User Roles & Access Control
 
-| Role | Key Permissions |
-|------|-----------------|
-| **Admin** | Create/delete users, manage passwords, view all users |
-| **Researcher** | Manage experiments, version control, borrow items, book lab rooms |
-| **Technician** | Manage inventory, process borrow requests, track items |
-| **Lab Manager** | Approve reservations, generate reports, approve item requests |
-
----
-
-## Default Login
-
-On first run, only **Admin** login is available:
-- **Role**: `admin`
-- **Password**: `123456`
-
-After initial setup, the Admin can create users with other roles.
+| Role | Key Responsibilities | Technical Access |
+|------|----------------------|------------------|
+| **Admin** | System Governance | User CRUD, Password Overrides, Audit Views |
+| **Researcher** | Scientific Operations | Experiment VCS, Resource Borrowing, Room Booking |
+| **Technician** | Logistics & Inventory | Stock Management, Borrow Request Approval |
+| **Lab Manager** | Strategic Oversight | System Reporting, Resource Approval, Item Procurement |
 
 ---
 
-## Data Storage
+## 🛠️ Key Technical Features
 
-Data is persisted in CSV files:
+### 🏢 Refined Terminal UI
+Instead of a standard CLI, LABTRACK features a **Premium ANSI Terminal Interface**:
+- **Standardized Tables**: All data is presented in clean, auto-scaling ASCII tables.
+- **Color-Coded Feedback**: Success, Warning, and Error states are uniquely styled for immediate user recognition.
+- **Clean Navigation**: Elimination of redundant outputs ensures a professional, single-source-of-truth interaction model.
 
-| File | Description |
-|------|-------------|
-| `users.csv` | User accounts and credentials |
-| `experiments.csv` | Experiment records |
-| `experiment_versions.csv` | Version history for experiments |
-| `inventory.csv` | Inventory items |
-| `borrow_requests.csv` | Pending borrow requests |
-| `borrowed_items.csv` | Currently borrowed items |
-| `bookings_pending.csv` | Pending room reservations |
-| `bookings_approved.csv` | Approved reservations |
-| `lab_rooms.csv` | Lab room allocations |
+### 🔄 Experiment Versioning
+Researchers can track the evolution of their work through a custom **Version Control System**:
+- **Snapshots**: Capture the entire state of an experiment at any point in time.
+- **Rollback**: Instant restoration to any previous version with detailed change logging.
 
 ---
 
-## Usage Examples
+## 📂 Project Structure
 
-### Login Flow
-```
-**************************************************
-*           Welcome to LABTRACK                  *
-**************************************************
-
-+----------------------------------------------+
-|                    LOGIN                     |
-+----------------------------------------------+
-Enter username: john
-Enter role: researcher
-Enter password: ****
-
-  >>> Welcome, john! <<<
-```
-
-### Researcher Dashboard
-```
-+----------------------------------------------+
-|           RESEARCHER DASHBOARD               |
-+----------------------------------------------+
-
-  ~~~ Experiments ~~~
-  [1] Add Experiment
-  [2] View Experiments
-  [3] Modify Experiment
-
-  ~~~ Version Control ~~~
-  [6] View Version History
-  [7] Restore Version
-
-  ~~~ Items ~~~
-  [10] View Available Items
-  [11] Borrow Item
-  [12] Request New Item
-
-  ~~~ Reservations ~~~
-  [20] Delete Experiment
-  [21] Make Reservation
-  [22] View Booked Rooms
+```bash
+Labtrack/
+├── src/labtrack/
+│   ├── main/           # Application entry point & core loop
+│   ├── auth/           # RBAC & Authentication logic
+│   ├── users/          # Hierarchical role models (Inheritance/Polymorphism)
+│   ├── experiments/    # Research management & VCS integration
+│   ├── inventory/      # Logistics & Item lifecycle services
+│   ├── booking/        # Resource reservation system
+│   ├── util/           # I/O, Styling (Colors), & Data Presentation (TablePrinter)
+│   └── version/        # Core VCS data structures
+├── bin/                # Compiled bytecode
+└── *.csv               # CSV persistence layer
 ```
 
 ---
 
-## Key Highlights
+## 🎓 Authors
 
-- **Role-Based Access Control**: Each user type has a customized dashboard
-- **Version Control for Experiments**: Track changes with timestamps and restore previous versions
-- **File-Based Persistence**: No external database required
-- **Modular Architecture**: Clean separation of concerns with service classes
-- **Input Validation**: Secure input handling with validation rules
+- **230042105** - Tiran Abdullah
+- **230042121** - Md Rufayed Ul Alam
+- **230042142** - Shudipto Sarwar Mamun
 
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit changes (`git commit -am 'Add new feature'`)
-4. Push to branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
-
----
-
-## License
-
-This project is available for educational and academic purposes.
-
----
-
-## Authors
-
-** 230042105-Tiran Abdullah
-** 230042121-Md Rufayed Ul Alam
-** 230042142-Shudipto Sarwar Mamun
-
-Developed as a Research Laboratory Management Solution for efficient lab operations tracking.
+Developed as a professional solution for **Research Laboratory Management**.
