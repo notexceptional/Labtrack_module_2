@@ -73,6 +73,7 @@ public class AuthService {
                     case "researcher" -> { return new Researcher(id, user); }
                     case "technician" -> { return new Technician(id, user); }
                     case "labmanager" -> { return new LabManager(id, user); }
+                    case "labassistant" -> { return new LabAssistant(id, user); }
                 }
             }
         }

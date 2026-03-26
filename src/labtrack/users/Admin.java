@@ -71,7 +71,7 @@ public class Admin extends User {
             }
         }
 
-        String role = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
+        String role = InputHelper.readLine("Enter role (researcher/technician/labmanager/labassistant): ");
         if (!isValidRole(role) || role.equalsIgnoreCase("admin")) {
             System.out.println("  [ERROR] Invalid role. User not created.");
             return;
@@ -184,6 +184,7 @@ public class Admin extends User {
             case "researcher":
             case "technician":
             case "labmanager":
+            case "labassistant":
             case "admin":
                 return true;
             default:

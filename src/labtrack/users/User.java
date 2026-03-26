@@ -14,8 +14,20 @@ public abstract class User {
         this.role = role;
     }
 
+
+    public String getName() {
+        return username;
+    }
+
+
+    public String getRole() {
+        return role;
+    }
+
+    // --- Existing Logic ---
+
     public boolean login(String inputPassword) {
-        return password.equals(inputPassword);
+        return password != null && password.equals(inputPassword);
     }
 
     public void logout() {
@@ -23,6 +35,6 @@ public abstract class User {
     }
 
     public abstract void showMenu();
-    public void handleChoice(int choice, Scanner sc) {
-    }
+
+    public abstract void handleChoice(int choice, Scanner sc);
 }
