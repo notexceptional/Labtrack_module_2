@@ -8,11 +8,7 @@ import labtrack.util.InputHelper;
 import labtrack.util.Colors;
 import labtrack.util.TablePrinter;
 
-/**
- * Represents the System Administrator.
- * Admins have full control over user management, including creating,
- * deleting, and updating passwords for all roles in the system.
- */
+
 public class Admin extends User {
     private static final String USERS_FILE = "users.csv";
 
@@ -75,9 +71,11 @@ public class Admin extends User {
             }
         }
 
-        String newRole = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
-        if (!isValidRole(newRole) || newRole.equalsIgnoreCase("admin")) {
-            Colors.error("Invalid role. User not created.");
+
+        String role = InputHelper.readLine("Enter role (researcher/technician/labmanager/labassistant): ");
+        if (!isValidRole(role) || role.equalsIgnoreCase("admin")) {
+            System.out.println("  [ERROR] Invalid role. User not created.");
+
             return;
         }
 
@@ -176,6 +174,7 @@ public class Admin extends User {
             case "researcher":
             case "technician":
             case "labmanager":
+            case "labassistant":
             case "admin":
                 return true;
             default:
