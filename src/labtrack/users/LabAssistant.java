@@ -1,11 +1,7 @@
 package labtrack.users;
 
 import labtrack.sample.SampleService;
-
 import java.util.Scanner;
-
-
-
 
 public class LabAssistant extends User {
 
@@ -22,12 +18,12 @@ public class LabAssistant extends User {
         System.out.println("  ~~~ Sample Management ~~~");
         System.out.println("  [1] Register New Sample (Chemical/Reagent)");
         System.out.println("  [2] View All Samples");
+        System.out.println("  [3] Delete a Sample");
         System.out.println();
         System.out.println("  ~~~ Usage & Tracking ~~~");
-        System.out.println("  [3] Log Sample Usage (Update Quality)");
-        System.out.println("  [4] Check Experiment Eligibility");
+        System.out.println("  [4] Log Sample Usage (Update Quality)");
+        System.out.println("  [5] Check Experiment Eligibility");
         System.out.println();
-        System.out.println("  [0] Logout");
     }
 
     @Override
@@ -41,9 +37,12 @@ public class LabAssistant extends User {
                 sampleService.viewSamples();
                 break;
             case 3:
-                sampleService.trackUsage(sc);
+                sampleService.deleteSample(sc); // NEW CASE
                 break;
             case 4:
+                sampleService.trackUsage(sc);
+                break;
+            case 5:
                 sampleService.checkGradeEligibility(sc);
                 break;
             default:

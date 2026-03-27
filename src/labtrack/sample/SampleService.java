@@ -1,5 +1,6 @@
 package labtrack.sample;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import labtrack.util.FileManager;
@@ -10,14 +11,46 @@ public class SampleService {
 
     public void addSample(Scanner sc) {
         String id = InputHelper.readLine("Enter Sample ID: ");
+
+        List<String> existing = FileManager.readAllLines(FILE_NAME);
+        for (String line : existing) {
+            String[] p = line.split(",");
+            if (p.length >= 1 && p[0].trim().equals(id)) {
+                System.out.println("\n  [ERROR] Sample ID '" + id + "' already exists. Registration cancelled.");
+                return;
+            }
+        }
+
         String name = InputHelper.readLine("Enter Sample Name: ");
         String type = InputHelper.readLine("Enter Type (Chemical/Reagent/Catalyst): ");
 
-        
         Sample sample = new Sample(id, name, type, 0, 100.0, "High Sensitivity");
         FileManager.write(FILE_NAME, sample.toString());
 
         System.out.println("\n  >>> Sample registered successfully! <<<");
+    }
+
+    public void deleteSample(Scanner sc) {
+        String targetId = InputHelper.readLine("Enter Sample ID to delete: ");
+        List<String> lines = FileManager.readAllLines(FILE_NAME);
+        List<String> keptLines = new ArrayList<>();
+        boolean found = false;
+
+        for (String line : lines) {
+            String[] p = line.split(",");
+            if (p[0].equals(targetId)) {
+                found = true;
+                continue;
+            }
+            keptLines.add(line);
+        }
+
+        if (found) {
+            FileManager.overwrite(FILE_NAME, keptLines);
+            System.out.println("\n  >>> Sample '" + targetId + "' deleted successfully. <<<");
+        } else {
+            System.out.println("\n  [ERROR] Sample ID not found.");
+        }
     }
 
     public void viewSamples() {

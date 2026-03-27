@@ -55,12 +55,6 @@ public class Admin extends User {
             return;
         }
 
-        String newUsername = InputHelper.readLine("Enter username (letters only): ");
-        if (!newUsername.matches("[A-Za-z]+")) {
-            Colors.error("Username must be letters only.");
-            return;
-        }
-
         List<String> lines = FileManager.readAllLines(USERS_FILE);
         for (String line : lines) {
             String[] p = line.split(",");
@@ -69,6 +63,12 @@ public class Admin extends User {
                 Colors.error("User ID already exists. User not created.");
                 return;
             }
+        }
+
+        String newUsername = InputHelper.readLine("Enter username (letters only): ");
+        if (!newUsername.matches("[A-Za-z]+")) {
+            Colors.error("Username must be letters only.");
+            return;
         }
 
 
