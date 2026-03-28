@@ -35,20 +35,20 @@ public class Researcher extends User {
         System.out.println("  [" + Colors.colorize("1", Colors.YELLOW_BOLD) + "] Add Experiment");
         System.out.println("  [" + Colors.colorize("2", Colors.YELLOW_BOLD) + "] View Experiments");
         System.out.println("  [" + Colors.colorize("3", Colors.YELLOW_BOLD) + "] Modify Experiment");
-        System.out.println("  [" + Colors.colorize("20", Colors.YELLOW_BOLD) + "] Delete Experiment");
+        System.out.println("  [" + Colors.colorize("4", Colors.YELLOW_BOLD) + "] Delete Experiment");
         System.out.println();
         System.out.println(Colors.colorize("  ~~~ Version Control ~~~", Colors.CYAN_BOLD));
-        System.out.println("  [" + Colors.colorize("6", Colors.YELLOW_BOLD) + "] View Version History");
-        System.out.println("  [" + Colors.colorize("7", Colors.YELLOW_BOLD) + "] Restore Version");
+        System.out.println("  [" + Colors.colorize("5", Colors.YELLOW_BOLD) + "] View Version History");
+        System.out.println("  [" + Colors.colorize("6", Colors.YELLOW_BOLD) + "] Restore Version");
         System.out.println();
         System.out.println(Colors.colorize("  ~~~ Items ~~~", Colors.CYAN_BOLD));
-        System.out.println("  [" + Colors.colorize("10", Colors.YELLOW_BOLD) + "] View Available Items");
-        System.out.println("  [" + Colors.colorize("11", Colors.YELLOW_BOLD) + "] Borrow Item");
-        System.out.println("  [" + Colors.colorize("12", Colors.YELLOW_BOLD) + "] Request New Item");
+        System.out.println("  [" + Colors.colorize("7", Colors.YELLOW_BOLD) + "] View Available Items");
+        System.out.println("  [" + Colors.colorize("8", Colors.YELLOW_BOLD) + "] Borrow Item");
+        System.out.println("  [" + Colors.colorize("9", Colors.YELLOW_BOLD) + "] Request New Item");
         System.out.println();
         System.out.println(Colors.colorize("  ~~~ Reservations ~~~", Colors.CYAN_BOLD));
-        System.out.println("  [" + Colors.colorize("21", Colors.YELLOW_BOLD) + "] Make Reservation");
-        System.out.println("  [" + Colors.colorize("22", Colors.YELLOW_BOLD) + "] View Booked Rooms");
+        System.out.println("  [" + Colors.colorize("10", Colors.YELLOW_BOLD) + "] Make Reservation");
+        System.out.println("  [" + Colors.colorize("11", Colors.YELLOW_BOLD) + "] View Booked Rooms");
     }
 
     @Override
@@ -69,35 +69,35 @@ public class Researcher extends User {
             expService.modifyExperiment(sc);
             return;
         }
-        if (choice == 6) {
+        if (choice == 5) {
             expService.viewVersionHistory(sc);
             return;
         }
-        if (choice == 7) {
+        if (choice == 6) {
             expService.restoreVersion(sc);
             return;
         }
-        if (choice == 10) {
+        if (choice == 7) {
             itemService.viewAvailableItems();
             return;
         }
-        if (choice == 11) {
+        if (choice == 8) {
             itemService.borrowItem(sc, username);
             return;
         }
-        if (choice == 12) {
+        if (choice == 9) {
             itemService.requestNewItem(sc, username);
             return;
         }
-        if (choice == 20) {
+        if (choice == 4) {
             expService.deleteExperiment(sc);
             return;
         }
-        if (choice == 21) {
+        if (choice == 10) {
             bookingService.makeReservation(sc, username);
             return;
         }
-        if (choice == 22) {
+        if (choice == 11) {
             bookingService.viewBookedRooms();
             return;
         }

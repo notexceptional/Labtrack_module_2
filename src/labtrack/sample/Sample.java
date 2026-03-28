@@ -1,53 +1,76 @@
 package labtrack.sample;
 
 public class Sample {
-    private String sampleID;
-    private String type;
-    private String parentSampleID;
+    private String id;
+    private String name;
+    private String type;        
+    private int useCount;       
+    private double quality;     
+    private String grade;       
 
-    public Sample(String sampleID, String type, String parentSampleID) {
-        this.sampleID = sampleID;
+    
+    public Sample(String id, String name, String type, int useCount, double quality, String grade) {
+        this.id = id;
+        this.name = name;
         this.type = type;
-        this.parentSampleID = parentSampleID;
+        this.useCount = useCount;
+        this.quality = quality;
+        this.grade = grade;
     }
 
-    public String getSampleID() {
-        return sampleID;
+    
+    @Override
+    public String toString() {
+        return id + "," + name + "," + type + "," + useCount + "," + quality + "," + grade;
+    }
+
+   
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getType() {
         return type;
     }
 
-    public String getParentSampleID() {
-        return parentSampleID;
-    }
-
-    public boolean hasParent() {
-        return parentSampleID != null && !parentSampleID.trim().isEmpty();
-    }
-
-    public void updateType(String type) {
+    public void setType(String type) {
         this.type = type;
     }
 
-    public void updateParentSampleID(String parentSampleID) {
-        this.parentSampleID = parentSampleID;
-    }
-    @Override
-    public String toString() {
-        return safe(sampleID) + "," + safe(type) + "," + safe(parentSampleID);
+    public int getUseCount() {
+        return useCount;
     }
 
-    public static Sample fromString(String line) {
-        if (line == null) return null;
-        String[] parts = line.split(",", 3);
-        if (parts.length < 2) return null;
-        String parent = parts.length == 3 ? parts[2] : "";
-        return new Sample(parts[0], parts[1], parent);
+    public void setUseCount(int useCount) {
+        this.useCount = useCount;
     }
 
-    private static String safe(String s) {
-        return s == null ? "" : s;
+    public double getQuality() {
+        return quality;
+    }
+
+    public void setQuality(double quality) {
+        this.quality = quality;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 }

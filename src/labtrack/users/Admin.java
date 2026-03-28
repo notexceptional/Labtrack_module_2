@@ -8,11 +8,7 @@ import labtrack.util.InputHelper;
 import labtrack.util.Colors;
 import labtrack.util.TablePrinter;
 
-/**
- * Represents the System Administrator.
- * Admins have full control over user management, including creating,
- * deleting, and updating passwords for all roles in the system.
- */
+
 public class Admin extends User {
     private static final String USERS_FILE = "users.csv";
 
@@ -59,12 +55,6 @@ public class Admin extends User {
             return;
         }
 
-        String newUsername = InputHelper.readLine("Enter username (letters only): ");
-        if (!newUsername.matches("[A-Za-z]+")) {
-            Colors.error("Username must be letters only.");
-            return;
-        }
-
         List<String> lines = FileManager.readAllLines(USERS_FILE);
         for (String line : lines) {
             String[] p = line.split(",");
@@ -75,9 +65,17 @@ public class Admin extends User {
             }
         }
 
-        String newRole = InputHelper.readLine("Enter role (researcher/technician/labmanager): ");
-        if (!isValidRole(newRole) || newRole.equalsIgnoreCase("admin")) {
-            Colors.error("Invalid role. User not created.");
+        String newUsername = InputHelper.readLine("Enter username (letters only): ");
+        if (!newUsername.matches("[A-Za-z]+")) {
+            Colors.error("Username must be letters only.");
+            return;
+        }
+
+
+        String role = InputHelper.readLine("Enter role (researcher/technician/labmanager/labassistant): ");
+        if (!isValidRole(role) || role.equalsIgnoreCase("admin")) {
+            System.out.println("  [ERROR] Invalid role. User not created.");
+
             return;
         }
 
@@ -87,7 +85,7 @@ public class Admin extends User {
             return;
         }
 
-        FileManager.write(USERS_FILE, id + "," + newUsername + "," + newRole.toLowerCase() + "," + newPassword);
+        FileManager.write(USERS_FILE, id + "," + newUsername + "," + role.toLowerCase() + "," + newPassword);
         System.out.println();
         Colors.success("User created successfully!");
         System.out.println();
@@ -176,6 +174,7 @@ public class Admin extends User {
             case "researcher":
             case "technician":
             case "labmanager":
+            case "labassistant":
             case "admin":
                 return true;
             default:

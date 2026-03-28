@@ -1,15 +1,11 @@
 package labtrack.util;
 
-/**
- * Utility class for managing ANSI escape codes for terminal styling.
- * Provides constants for colors and helper methods for common UI components 
- * like headers, success/error messages, and colorful text.
- */
+
 public class Colors {
-    // Reset
+
     public static final String RESET = "\033[0m";
 
-    // Regular Colors
+
     public static final String BLACK = "\033[0;30m";
     public static final String RED = "\033[0;31m";
     public static final String GREEN = "\033[0;32m";
@@ -19,27 +15,15 @@ public class Colors {
     public static final String CYAN = "\033[0;36m";
     public static final String WHITE = "\033[0;37m";
 
-    // Bold
-    public static final String BLACK_BOLD = "\033[1;30m";
+
     public static final String RED_BOLD = "\033[1;31m";
     public static final String GREEN_BOLD = "\033[1;32m";
     public static final String YELLOW_BOLD = "\033[1;33m";
-    public static final String BLUE_BOLD = "\033[1;34m";
     public static final String PURPLE_BOLD = "\033[1;35m";
     public static final String CYAN_BOLD = "\033[1;36m";
-    public static final String WHITE_BOLD = "\033[1;37m";
 
-    // Backgrounds
-    public static final String BLACK_BACKGROUND = "\033[40m";
-    public static final String RED_BACKGROUND = "\033[41m";
-    public static final String GREEN_BACKGROUND = "\033[42m";
-    public static final String YELLOW_BACKGROUND = "\033[43m";
-    public static final String BLUE_BACKGROUND = "\033[44m";
-    public static final String PURPLE_BACKGROUND = "\033[45m";
-    public static final String CYAN_BACKGROUND = "\033[46m";
-    public static final String WHITE_BACKGROUND = "\033[47m";
 
-    // Utility methods
+
     public static String colorize(String text, String color) {
         return color + text + RESET;
     }
@@ -52,16 +36,12 @@ public class Colors {
         System.out.println(colorize(text, color));
     }
 
-    /**
-     * Prints a standardized red error message.
-     */
+
     public static void error(String msg) {
         System.out.println(colorize("  [ERROR] " + msg, RED_BOLD));
     }
 
-    /**
-     * Prints a standardized green success message.
-     */
+
     public static void success(String msg) {
         System.out.println(colorize("  >>> " + msg + " <<<", GREEN_BOLD));
     }
@@ -70,10 +50,7 @@ public class Colors {
         System.out.println(colorize("  [!] " + msg, YELLOW_BOLD));
     }
 
-    /**
-     * Prints a standardized, centered header for menu panels.
-     * @param title The title to display in the header.
-     */
+
     public static void header(String title) {
         String separator = "+----------------------------------------------+";
         System.out.println(colorize(separator, CYAN));

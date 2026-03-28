@@ -13,79 +13,79 @@ import labtrack.util.InputHelper;
  */
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        InputHelper.setScanner(scanner);
-        AuthService authService = new AuthService();
+        Scanner sc = new Scanner(System.in);
+        InputHelper.setScanner(sc);
+        AuthService auth = new AuthService();
 
         printWelcomeBanner();
 
-        // Primary application loop: handles login and session management
+
         while (true) {
-            Colors.header("Login");
-            User user = authService.login(scanner);
+            User user = auth.login(sc);
+
             if (user == null) {
-                Colors.error("Login failed. Please try again.");
+                System.out.println("  [!] Login failed. Please try again.");
                 continue;
             }
 
-            Colors.success("Welcome, " + user.getUsername() + "!");
+            System.out.println("\n  >>> Welcome, " + user.getName() + " (" + user.getRole() + ") <<<");
+
+
+            Colors.success("Welcome, " + user.getName() + "!");
 
             // Session loop: remains active until the user logs out or exits
             boolean loggedIn = true;
             while (loggedIn) {
-                System.out.println();
                 user.showMenu();
+
                 System.out.println();
-                System.out.println(Colors.colorize("----------------------------------------------", Colors.CYAN));
-                System.out.println("  [" + Colors.colorize("0", Colors.YELLOW_BOLD) + "] Logout");
-                System.out.println("  [" + Colors.colorize("999", Colors.RED_BOLD) + "] Exit");
-                System.out.println(Colors.colorize("----------------------------------------------", Colors.CYAN));
-                System.out.println();
-                
-                String choiceStr = InputHelper.readLine("Enter choice: ");
+
+                System.out.println("  [0]   Logout");
+                System.out.println("  [999] Exit System");
+                System.out.println("----------------------------------------------");
+
+                String input = InputHelper.readLine("Select an option: ");
+
                 int choice;
+
                 try {
-                    choice = Integer.parseInt(choiceStr);
+
+                    choice = Integer.parseInt(input);
                 } catch (NumberFormatException e) {
-                    Colors.error("Invalid input. Please enter a number.");
+                    System.out.println("  [ERROR] Please enter a valid numerical option.");
                     continue;
                 }
 
-                // Global navigation logic: handles common actions (logout, exit)
-                // and delegates role-specific actions to the User object.
-                switch (choice) {
-                    case 0:
-                        System.out.println();
-                        Colors.success("Logged out successfully!");
-                        System.out.println();
-                        loggedIn = false;
-                        break;
-                    case 999:
-                        System.out.println();
-                        System.out.println(Colors.colorize("**************************************************", Colors.CYAN));
-                        System.out.println(Colors.colorize("*      Thank you for using LABTRACK!            *", Colors.CYAN_BOLD));
-                        System.out.println(Colors.colorize("**************************************************", Colors.CYAN));
-                        System.out.println();
-                        scanner.close();
-                        System.exit(0);
-                        break;
-                    default:
-                        user.handleChoice(choice, scanner);
-                        break;
+                if (choice == 0) {
+                    System.out.println("\n  >>> Logging out... See you soon! <<<\n");
+                    loggedIn = false;
+                } else if (choice == 999) {
+                    printExitMessage();
+                    sc.close();
+                    System.exit(0);
+                } else {
+
+                    user.handleChoice(choice, sc);
+
                 }
             }
         }
     }
 
     private static void printWelcomeBanner() {
-        System.out.println(Colors.colorize("                                                        ", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize("  _           _      ____    _____   ____       _       ____   _  __", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize(" | |         / \\    | __ )  |_   _| |  _ \\     / \\     / ___| | |/ /", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize(" | |        / _ \\   |  _ \\    | |   | |_) |   / _ \\   | |     | ' / ", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize(" | |___    / ___ \\  | |_) |   | |   |  _ <   / ___ \\  | |___  | . \\ ", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize(" |_____|  /_/   \\_\\ |____/    |_|   |_| \\_\\ /_/   \\_\\  \\____| |_|\\_\\", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize("                                                                    ", Colors.BLUE_BOLD));
-        System.out.println(Colors.colorize("           Research Laboratory Management System            ", Colors.CYAN));
-        System.out.println();
+
+        System.out.println("\n**************************************************");
+        System.out.println("* *");
+        System.out.println("* Welcome to LABTRACK v2.0             *");
+        System.out.println("* Research & Sample Management System      *");
+        System.out.println("* *");
+        System.out.println("**************************************************\n");
+    }
+
+    private static void printExitMessage() {
+        System.out.println("\n**************************************************");
+        System.out.println("* Thank you for using LABTRACK!            *");
+        System.out.println("* System Shutting Down...               *");
+        System.out.println("**************************************************\n");
     }
 }
